@@ -1,0 +1,67 @@
+name: Bug Report
+description: Report an issue or unexpected behavior with the CLI tool.
+title: '[BUG]: '
+labels: ['bug']
+body:
+  - type: textarea
+    id: command
+    attributes:
+      label: Command Executed
+      description: The exact command you ran in your terminal.
+      placeholder: "$ my-cli-tool do-something --flag value"
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Terminal Output & Error Logs
+      description: Paste stdout/stderr output here. Include stack traces if available.
+      placeholder: |
+        Error: failed to parse config file
+        at main.go:42...
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect the CLI to do or output instead?
+      placeholder: "Expected output to return exit code 0 and print 'Done'."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS (Apple Silicon / M1/M2/M3)
+        - macOS (Intel)
+        - Linux (Ubuntu/Debian)
+        - Linux (Arch/RHEL/Other)
+        - Windows (WSL)
+        - Windows (PowerShell/CMD)
+    validations:
+      required: true
+
+  - type: input
+    id: environment-info
+    attributes:
+      label: Versions & Shell
+      description: CLI version, Shell (zsh, bash, powershell), and install method (brew, npm, cargo, binary).
+      placeholder: "CLI v1.2.0 | zsh 5.9 | Installed via Homebrew"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction / Config File
+      description: Attach relevant configuration files, sample inputs, or minimal steps to reproduce.
+      render: yaml
+    validations:
+      required: false
