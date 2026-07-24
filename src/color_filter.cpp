@@ -1,7 +1,7 @@
 #include "../include/color_filter.hpp"
 
 bool applyGrayScale(BMPImage &img, double amount) {
-    // TODO: Validate amount, apply grayscale transformation to pixels, clamp channels, and report success.
+    std::cout << "1 + 1 = 2";
     return false;
 }
 
