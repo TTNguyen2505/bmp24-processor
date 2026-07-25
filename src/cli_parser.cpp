@@ -12,6 +12,9 @@ void printHelp() {
 
 [[nodiscard]]
 bool isNumber(const std::string &str) {
-    // TODO: Determine whether a string contains a valid command-line numeric value.
-    return false;
+    for (int i = 0; i < str.length(); i++) {
+        if (!std::isdigit(str[i]))
+            return false;
+    }
+    return true;
 }
