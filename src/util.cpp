@@ -21,7 +21,13 @@ inline std::size_t calculatePadding(std::int32_t width) {
 }
 
 std::uint8_t clampColor(double value) {
-    // TODO: Restrict a floating-point channel value to the valid 8-bit range.
+    if (value <= 0.0) {
+        return 0;
+    }
+    if (value >= 255.0) {
+        return 255;
+    }
+    return static_cast<std::uint8_t>(value + 0.5);
 }
 
 Pixel getPixelSafe(const BMPImage &img, std::int32_t x, std::int32_t y) {

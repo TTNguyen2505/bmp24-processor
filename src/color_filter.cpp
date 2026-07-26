@@ -1,4 +1,6 @@
 #include "../include/color_filter.hpp"
+#include "../include/matrix.hpp"
+#include "../include/util.hpp"
 
 bool applyGrayScale(BMPImage &img, double amount) {
     // TODO: Validate amount, apply grayscale transformation to pixels, clamp channels, and report success.
@@ -23,6 +25,17 @@ bool applyBrightness(BMPImage &img, double amount) {
 bool applyContrast(BMPImage &img, double amount) {
     // TODO: Validate amount, apply contrast transformation to pixels, clamp channels, and report success.
     return false;
+}
+
+bool applyFilterMatrix(BMPImage &img, const Matrix4x4 &matrix) {
+    for (auto &pixel : img.data) {
+        Vector4 color{static_cast<double>(pixel.red), static_cast<double>(pixel.green), static_cast<double>(pixel.blue), 1.0};
+        Vector4 transformed = matrix * color;
+        pixel.red = clampColor(transformed.x);
+        pixel.green = clampColor(transformed.y);
+        pixel.blue = clampColor(transformed.z);
+    }
+    return true;
 }
 
 bool applySaturate(BMPImage &img, double amount) {

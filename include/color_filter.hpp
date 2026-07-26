@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bmp24.hpp"
+#include "matrix.hpp"
 
 /**
  * @brief Applies a grayscale filter to the image.

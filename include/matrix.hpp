@@ -17,6 +17,17 @@ struct Matrix4x4 {
 };
 
 /**
+ * @struct Vector4
+ * @brief Defines a 4D color vector used for homogeneous color operations.
+ */
+struct Vector4 {
+    double x{0.0}; /**< X component, typically red. */
+    double y{0.0}; /**< Y component, typically green. */
+    double z{0.0}; /**< Z component, typically blue. */
+    double w{0.0}; /**< W component, typically alpha or homogeneous coordinate. */
+};
+
+/**
  * @brief Computes the determinant of a 3×3 matrix.
  * @param matrix Input matrix.
  * @return The determinant value.
@@ -49,6 +60,15 @@ Matrix3x3 operator*(const Matrix3x3 &lhs, const Matrix3x3 &rhs);
  */
 [[nodiscard]]
 Matrix4x4 operator*(const Matrix4x4 &lhs, const Matrix4x4 &rhs);
+
+/**
+ * @brief Transforms a 4D vector by a 4×4 matrix.
+ * @param lhs Color transformation matrix.
+ * @param rhs 4D vector representing RGB and homogeneous coordinate.
+ * @return Transformed 4D vector.
+ */
+[[nodiscard]]
+Vector4 operator*(const Matrix4x4 &lhs, const Vector4 &rhs);
 
 /**
  * @brief Creates a translation matrix.

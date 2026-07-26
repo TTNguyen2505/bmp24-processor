@@ -119,6 +119,10 @@ int main(int argc, char *argv[]) {
 
     if (hasFilter) {
         std::cout << "[3/4] Applying color filter matrix..." << std::endl;
+        if (!applyFilterMatrix(processedImg, F)) {
+            std::cerr << "[ERROR]: Failed to apply the cumulative color filter matrix!" << std::endl;
+            return 1;
+        }
     }
 
     std::cout << "[4/4] Saving output image to: " << outputPath << "..." << std::endl;
