@@ -71,7 +71,9 @@ struct Pixel {
 };
 
 /**
- * @brief 4D color vector with double-precision components in range [0.0, 1.0]
+ * @brief 4D color vector with double-precision components.
+ *
+ * Color channels are stored in raw 0-255 range. Alpha remains in [0.0, 1.0].
  */
 struct Color4 {
     double r{0.0};
@@ -83,13 +85,13 @@ struct Color4 {
     Color4(double rr, double gg, double bb, double aa = 1.0) : r(rr), g(gg), b(bb), a(aa) {}
 
     static Color4 fromPixel(const Pixel &p) {
-        return Color4(p.red / 255.0, p.green / 255.0, p.blue / 255.0, 1.0);
+        return Color4(p.red, p.green, p.blue, 1.0);
     }
 
     Pixel toPixel() const {
         Pixel p{};
         auto toByte = [](double v) -> std::uint8_t {
-            return static_cast<std::uint8_t>(std::clamp(v, 0.0, 1.0) * 255.0 + 0.5);
+            return static_cast<std::uint8_t>(std::clamp(v, 0.0, 255.0) + 0.5);
         };
         p.blue = toByte(b);
         p.green = toByte(g);
