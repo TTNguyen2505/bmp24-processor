@@ -1,4 +1,6 @@
 #include "../include/cli_parser.hpp"
+#include <string>
+#include <charconv>
 
 [[nodiscard]]
 CommandConfig parse(int argc, char *argv[]) {
@@ -10,8 +12,11 @@ void printHelp() {
     // TODO: Display usage instructions, supported options, parameters, examples, and file requirements.
 }
 
-[[nodiscard]]
 bool isNumber(const std::string &str) {
-    // TODO: Determine whether a string contains a valid command-line numeric value.
-    return false;
+    if (str.empty()) return false;
+
+    double value;
+    auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+
+    return ec == std::errc{} && ptr == str.data() + str.size();
 }
