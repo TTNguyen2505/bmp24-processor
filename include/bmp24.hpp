@@ -4,6 +4,7 @@
 #include <iostream>
 #include <variant>
 #include <vector>
+#include <algorithm>
 
 #pragma pack(push, 1)
 
@@ -67,6 +68,34 @@ struct Pixel {
     std::uint8_t blue{0}; /**< Blue component */
     std::uint8_t green{0}; /**< Green component */
     std::uint8_t red{0}; /**< Red component */
+};
+
+/**
+ * @brief 4D color vector with double-precision components in range [0.0, 1.0]
+ */
+struct Color4 {
+    double r{0.0};
+    double g{0.0};
+    double b{0.0};
+    double a{1.0};
+
+    Color4() = default;
+    Color4(double rr, double gg, double bb, double aa = 1.0) : r(rr), g(gg), b(bb), a(aa) {}
+
+    static Color4 fromPixel(const Pixel &p) {
+        return Color4(p.red / 255.0, p.green / 255.0, p.blue / 255.0, 1.0);
+    }
+
+    Pixel toPixel() const {
+        Pixel p{};
+        auto toByte = [](double v) -> std::uint8_t {
+            return static_cast<std::uint8_t>(std::clamp(v, 0.0, 1.0) * 255.0 + 0.5);
+        };
+        p.blue = toByte(b);
+        p.green = toByte(g);
+        p.red = toByte(r);
+        return p;
+    }
 };
 
 /**
