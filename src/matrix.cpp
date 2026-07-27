@@ -106,18 +106,18 @@ Matrix4x4 createSepiaMatrix(double amount) {
 }
 
 Matrix4x4 createInvertMatrix(double amount) {
-    // Color inversion: RGB -> (1-R, 1-G, 1-B)
+    // Color inversion: RGB -> (255-R, 255-G, 255-B)
     // Blends from identity (amount=0) to full inversion (amount=1)
     Matrix4x4 invert;
     
-    invert.data[0][0] = 1.0 - 2.0 * amount;
-    invert.data[0][3] = amount;
+    invert.data[0][0] = 1.0 - amount;
+    invert.data[0][3] = 255.0 * amount;
     
-    invert.data[1][1] = 1.0 - 2.0 * amount;
-    invert.data[1][3] = amount;
+    invert.data[1][1] = 1.0 - amount;
+    invert.data[1][3] = 255.0 * amount;
     
-    invert.data[2][2] = 1.0 - 2.0 * amount;
-    invert.data[2][3] = amount;
+    invert.data[2][2] = 1.0 - amount;
+    invert.data[2][3] = 255.0 * amount;
     
     invert.data[3][3] = 1.0;
     return invert;
@@ -137,10 +137,10 @@ Matrix4x4 createBrightnessMatrix(double amount) {
 }
 
 Matrix4x4 createContrastMatrix(double amount) {
-    // Contrast adjustment: scales channels around midpoint (0.5)
-    // Centers at 0.5, scales by (amount-1), then re-centers
+    // Contrast adjustment: scales channels around midpoint (127.5)
+    // Centers at 127.5, scales by amount, then re-centers
     Matrix4x4 contrast;
-    const double offset = (1.0 - amount) * 0.5;
+    const double offset = (1.0 - amount) * 127.5;
     
     contrast.data[0][0] = amount;
     contrast.data[0][3] = offset;
