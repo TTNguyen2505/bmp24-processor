@@ -1,10 +1,10 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 #include <iostream>
 #include <variant>
 #include <vector>
-#include <algorithm>
 
 #pragma pack(push, 1)
 
@@ -84,9 +84,7 @@ struct Color4 {
     Color4() = default;
     Color4(double rr, double gg, double bb, double aa = 1.0) : r(rr), g(gg), b(bb), a(aa) {}
 
-    static Color4 fromPixel(const Pixel &p) {
-        return Color4(p.red, p.green, p.blue, 1.0);
-    }
+    static Color4 fromPixel(const Pixel &p) { return Color4(p.red, p.green, p.blue, 1.0); }
 
     Pixel toPixel() const {
         Pixel p{};
