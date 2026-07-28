@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-[[nodiscard]]
 CommandConfig parse(int argc, char *argv[]) {
     CommandConfig config;
 
@@ -41,8 +40,8 @@ CommandConfig parse(int argc, char *argv[]) {
             continue;
         }
 
-        if (arg == "-grayscale" || arg == "-sepia" || arg == "-invert" ||
-            arg == "-brightness" || arg == "-contrast" || arg == "-saturate") {
+        if (arg == "-grayscale" || arg == "-sepia" || arg == "-invert" || arg == "-brightness" || arg == "-contrast" ||
+            arg == "-saturate") {
             if (i + 1 >= argc) {
                 fail("Option " + arg + " requires 1 numeric argument.");
                 break;
@@ -135,8 +134,8 @@ CommandConfig parse(int argc, char *argv[]) {
 void printHelp() {
     std::cout << "BMP24 Processor CLI\n"
               << "Usage:\n"
-              << "  bmp24-processer.exe [options] <input.bmp>\n"
-              << "  bmp24-processer.exe [options] <input.bmp> -o <output.bmp>\n"
+              << "  bmp24-processor.exe [options] <input.bmp>\n"
+              << "  bmp24-processor.exe [options] <input.bmp> -o <output.bmp>\n"
               << "\n"
               << "Description:\n"
               << "  Load a 24-bit BMP image, apply color filters and geometric transforms,\n"
@@ -166,9 +165,9 @@ void printHelp() {
               << "  --shear <alpha> <beta> Shear by alpha and beta degrees.\n"
               << "\n"
               << "Examples:\n"
-              << "  bmp24-processer.exe -grayscale 0.5 input.bmp\n"
-              << "  bmp24-processer.exe -invert 0.5 --rotate 90 input.bmp\n"
-              << "  bmp24-processer.exe --translate 100 50 --scale 1.5 1.5 input.bmp -o output.bmp\n"
+              << "  bmp24-processor.exe -grayscale 0.5 input.bmp\n"
+              << "  bmp24-processor.exe -invert 0.5 --rotate 90 input.bmp\n"
+              << "  bmp24-processor.exe --translate 100 50 --scale 1.5 1.5 input.bmp -o output.bmp\n"
               << "\n"
               << "Notes:\n"
               << "  - Filters and transforms are applied in the order they appear on the command line.\n"
