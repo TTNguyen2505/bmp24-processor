@@ -119,6 +119,10 @@ int main(int argc, char *argv[]) {
 
     if (hasFilter) {
         std::cout << "[3/4] Applying color filter matrix..." << std::endl;
+
+        for (std::size_t i = 0; i < processedImg.data.size(); ++i) {
+            processedImg.data[i] = applyColorMatrix(F, processedImg.data[i]);
+        }
     }
 
     std::cout << "[4/4] Saving output image to: " << outputPath << "..." << std::endl;
