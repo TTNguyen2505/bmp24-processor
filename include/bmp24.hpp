@@ -71,32 +71,54 @@ struct Pixel {
 };
 
 /**
- * @brief 4D color vector with double-precision components.
+ * @brief Represents a 4D color vector using double-precision floating-point values
+ *        for intermediate calculation in BMP image color filtering.
  *
- * Color channels are stored in raw 0-255 range. Alpha remains in [0.0, 1.0].
+ * @details This structure holds RGB color components in the range [0.0, 255.0]
+ *          along with a homogeneous coordinate 'w' set to 1.0. The 4D vector representation
+ *          enables affine color transformation via 4x4 matrix multiplication.
  */
 struct Color4 {
-    double r{0.0};
-    double g{0.0};
-    double b{0.0};
-    double a{1.0};
-
-    Color4() = default;
-    Color4(double rr, double gg, double bb, double aa = 1.0) : r(rr), g(gg), b(bb), a(aa) {}
-
-    static Color4 fromPixel(const Pixel &p) { return Color4(p.red, p.green, p.blue, 1.0); }
-
-    Pixel toPixel() const {
-        Pixel p{};
-        auto toByte = [](double v) -> std::uint8_t {
-            return static_cast<std::uint8_t>(std::clamp(v, 0.0, 255.0) + 0.5);
-        };
-        p.blue = toByte(b);
-        p.green = toByte(g);
-        p.red = toByte(r);
-        return p;
-    }
+    double r{0.0}; /**< Red color component in range [0.0, 255.0] */
+    double g{0.0}; /** Green color component in range [0.0, 255.0] */
+    double b{0.0}; /** Blue color component in range [0.0, 255.0] */
+    double w{1.0}; /**< Homogeneous coordinate (always 1.0 for affine color matrix transformation) */
 };
+
+/**
+ * @brief Converts a 24-bit BMP Pixel (8-bit per channel) to a Color4 double vector.
+ *
+ * @param p The input Pixel containing integral BGR color values in [0, 255].
+ * @return Color4 A 4D double color vector with w = 1.0.
+ */
+Color4 pixelToColor4(const Pixel &p) {
+    return Color4{static_cast<double>(p.red), static_cast<double>(p.green), static_cast<double>(p.blue), 1.0};
+}
+
+/**
+ * @brief Clamps a double-precision color value to [0.0, 255.0] and converts it to uint8_t.
+ *
+ * @param value The double color value to be clamped and rounded.
+ * @return std::uint8_t The resulting 8-bit unsigned integer color byte.
+ */
+std::uint8_t doubleToByte(double value) {
+    double clampedValue = std::clamp(value, 0.0, 255.0);
+    return static_cast<std::uint8_t>(clampedValue + 0.5);
+}
+
+/**
+ * @brief Converts a Color4 double vector back to a 24-bit BMP Pixel.
+ *
+ * @param c The input Color4 vector containing calculated double color values.
+ * @return Pixel The output Pixel ready to be written to a 24-bit BMP file.
+ */
+Pixel color4ToPixel(const Color4 &c) {
+    Pixel p;
+    p.blue = doubleToByte(c.b);
+    p.green = doubleToByte(c.g);
+    p.red = doubleToByte(c.r);
+    return p;
+}
 
 /**
  * @brief Variant which defines DIB Header (support InfoHeader, V4, V5)
