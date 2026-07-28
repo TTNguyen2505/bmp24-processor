@@ -51,6 +51,15 @@ Matrix3x3 operator*(const Matrix3x3 &lhs, const Matrix3x3 &rhs);
 Matrix4x4 operator*(const Matrix4x4 &lhs, const Matrix4x4 &rhs);
 
 /**
+ * @brief Applies a 4x4 color transformation matrix to a pixel.
+ * @param matrix Color filter matrix.
+ * @param pixel Input pixel.
+ * @return Transformed pixel with clamped RGB channels.
+ */
+[[nodiscard]]
+Pixel applyColorMatrix(const Matrix4x4 &matrix, const Pixel &pixel);
+
+/**
  * @brief Creates a translation matrix.
  * @param tx Translation along the x-axis.
  * @param ty Translation along the y-axis.

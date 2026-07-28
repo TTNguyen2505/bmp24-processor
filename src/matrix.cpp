@@ -1,4 +1,5 @@
 #include "../include/matrix.hpp"
+#include "../include/util.hpp"
 
 double determinant(const Matrix3x3 &matrix) {
     // TODO: Calculate and return the determinant using standard 3x3 co-factor expansion.
@@ -177,4 +178,16 @@ Matrix4x4 createSaturateMatrix(double amount) {
 
     saturate.data[3][3] = 1.0;
     return saturate;
+}
+
+Pixel applyColorMatrix(const Matrix4x4 &matrix, const Pixel &pixel) {
+    const double r = matrix.data[0][0] * pixel.red + matrix.data[0][1] * pixel.green + matrix.data[0][2] * pixel.blue + matrix.data[0][3];
+    const double g = matrix.data[1][0] * pixel.red + matrix.data[1][1] * pixel.green + matrix.data[1][2] * pixel.blue + matrix.data[1][3];
+    const double b = matrix.data[2][0] * pixel.red + matrix.data[2][1] * pixel.green + matrix.data[2][2] * pixel.blue + matrix.data[2][3];
+
+    Pixel result;
+    result.red = clampColor(r);
+    result.green = clampColor(g);
+    result.blue = clampColor(b);
+    return result;
 }
