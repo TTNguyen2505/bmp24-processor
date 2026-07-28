@@ -21,7 +21,7 @@ bool applyScale(BMPImage &img, double sx, double sy) {
 }
 
 bool applyRotation(BMPImage &img, double theta) {
-    // TODO: 
+    // TODO:
 }
 
 bool applyShear(BMPImage &img, double alpha, double beta) {
