@@ -29,5 +29,9 @@ std::uint8_t clampColor(double value) {
 }
 
 Pixel getPixelSafe(const BMPImage &img, std::int32_t x, std::int32_t y) {
-    // TODO:  Return the requested pixel or black when coordinates exceed image boundaries.
+    if (x < 0 || x >= getWidth(img) || y < 0 || y >= getHeight(img)) {
+        return Pixel{0, 0, 0};
+    }
+
+    return img.data[y * getWidth(img) + x];
 }
