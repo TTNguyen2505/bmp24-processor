@@ -1,6 +1,10 @@
 #include "../include/transform.hpp"
 
+#include <algorithm>
 #include <cmath>
+#include <utility>
+
+#include "../include/util.hpp"
 
 constexpr double PI = 3.14159265358979323846;
 
@@ -19,8 +23,32 @@ double degToRad(double degree) {
 }
 
 std::pair<int, int> calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T) {
-    // TODO: Transform image corners and calculate the resulting axis-aligned bounding dimensions.
-    return {};
+
+    const double right = static_cast<double>(srcWidth - 1);
+    const double bottom = static_cast<double>(srcHeight - 1);
+
+    const CoordinateVector3 corners[4] = {T * CoordinateVector3{0.0, 0.0, 1.0}, T * CoordinateVector3{right, 0.0, 1.0},
+                                          T * CoordinateVector3{0.0, bottom, 1.0},
+                                          T * CoordinateVector3{right, bottom, 1.0}};
+
+    double minX = corners[0].x;
+    double maxX = corners[0].x;
+    double minY = corners[0].y;
+    double maxY = corners[0].y;
+
+    for (int i = 1; i < 4; ++i) {
+        minX = std::min(minX, corners[i].x);
+        maxX = std::max(maxX, corners[i].x);
+
+        minY = std::min(minY, corners[i].y);
+        maxY = std::max(maxY, corners[i].y);
+    }
+
+    const int newWidth = static_cast<int>(std::ceil(maxX)) - static_cast<int>(std::floor(minX)) + 1;
+
+    const int newHeight = static_cast<int>(std::ceil(maxY)) - static_cast<int>(std::floor(minY)) + 1;
+
+    return {newWidth, newHeight};
 }
 
 Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY) {
