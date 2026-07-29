@@ -22,8 +22,7 @@ double degToRad(double degree) {
     return degree * PI / 180.0;
 }
 
-std::pair<int, int> calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T) {
-
+TransformedImageBounds calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T) {
     const double right = static_cast<double>(srcWidth - 1);
     const double bottom = static_cast<double>(srcHeight - 1);
 
@@ -39,16 +38,19 @@ std::pair<int, int> calculateNewDimensions(int srcWidth, int srcHeight, const Ma
     for (int i = 1; i < 4; ++i) {
         minX = std::min(minX, corners[i].x);
         maxX = std::max(maxX, corners[i].x);
-
         minY = std::min(minY, corners[i].y);
         maxY = std::max(maxY, corners[i].y);
     }
 
-    const int newWidth = static_cast<int>(std::ceil(maxX)) - static_cast<int>(std::floor(minX)) + 1;
+    const std::int32_t offsetX = static_cast<std::int32_t>(std::floor(minX));
 
-    const int newHeight = static_cast<int>(std::ceil(maxY)) - static_cast<int>(std::floor(minY)) + 1;
+    const std::int32_t offsetY = static_cast<std::int32_t>(std::floor(minY));
 
-    return {newWidth, newHeight};
+    const std::int32_t width = static_cast<std::int32_t>(std::ceil(maxX)) - offsetX + 1;
+
+    const std::int32_t height = static_cast<std::int32_t>(std::ceil(maxY)) - offsetY + 1;
+
+    return {width, height, offsetX, offsetY};
 }
 
 Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY) {

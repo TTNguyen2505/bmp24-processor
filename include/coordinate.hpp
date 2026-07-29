@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tuple>
+
 /**
  * @struct CoordinateVector3
  * @brief Represents a 2D point in homogeneous coordinates.
