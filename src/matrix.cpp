@@ -39,3 +39,13 @@ Matrix4x4 operator*(const Matrix4x4 &lhs, const Matrix4x4 &rhs) {
     }
     return result;
 }
+
+CoordinateVector3 operator*(const Matrix3x3 &mat, const CoordinateVector3 &vec) {
+    CoordinateVector3 result;
+
+    result.x = mat.data[0][0] * vec.x + mat.data[0][1] * vec.y + mat.data[0][2] * vec.w;
+    result.y = mat.data[1][0] * vec.x + mat.data[1][1] * vec.y + mat.data[1][2] * vec.w;
+    result.w = mat.data[2][0] * vec.x + mat.data[2][1] * vec.y + mat.data[2][2] * vec.w;
+
+    return result;
+}

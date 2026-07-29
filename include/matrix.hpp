@@ -1,5 +1,7 @@
 #pragma once
 
+#include "coordinate.hpp"
+
 /**
  * @struct Matrix3x3
  * @brief Represents a 3×3 matrix for geometric transformations.
@@ -49,3 +51,16 @@ Matrix3x3 operator*(const Matrix3x3 &lhs, const Matrix3x3 &rhs);
  */
 [[nodiscard]]
 Matrix4x4 operator*(const Matrix4x4 &lhs, const Matrix4x4 &rhs);
+
+/**
+ * @brief Multiplies a 3x3 transformation matrix by a 3D homogeneous coordinate vector.
+ *
+ * Applies geometric transformations (translation, scaling, rotation, shearing)
+ * to a pixel coordinate vector [x, y, w]^T.
+ *
+ * @param mat The 3x3 transformation matrix.
+ * @param vec The 3D coordinate vector.
+ * @return CoordinateVector3 The transformed coordinate vector.
+ */
+[[nodiscard]]
+CoordinateVector3 operator*(const Matrix3x3 &mat, const CoordinateVector3 &vec);
