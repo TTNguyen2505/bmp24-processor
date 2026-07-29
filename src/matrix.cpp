@@ -11,8 +11,19 @@ Matrix3x3 inverse(const Matrix3x3 &matrix) {
 }
 
 Matrix3x3 operator*(const Matrix3x3 &lhs, const Matrix3x3 &rhs) {
-    // TODO: Multiply two 3x3 matrices using row-by-column multiplication.
-    return {};
+    Matrix3x3 result{};
+
+    for (int row = 0; row < 3; ++row) {
+        for (int col = 0; col < 3; ++col) {
+            result.data[row][col] = 0.0;
+
+            for (int k = 0; k < 3; ++k) {
+                result.data[row][col] += lhs.data[row][k] * rhs.data[k][col];
+            }
+        }
+    }
+
+    return result;
 }
 
 Matrix4x4 operator*(const Matrix4x4 &lhs, const Matrix4x4 &rhs) {
