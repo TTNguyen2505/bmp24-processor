@@ -15,11 +15,13 @@
 std::pair<int, int> calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T);
 
 /**
- * @brief Computes a pixel value using bilinear interpolation.
+ * @brief Computes a pixel value at a continuous source coordinate
+ *        using bilinear interpolation.
+ *
  * @param srcImage Source image.
- * @param srcX Horizontal coordinate in the source image.
- * @param srcY Vertical coordinate in the source image.
- * @return The interpolated pixel.
+ * @param srcX Continuous horizontal coordinate in the source image.
+ * @param srcY Continuous vertical coordinate in the source image.
+ * @return The interpolated pixel value.
  */
 [[nodiscard]]
 Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY);
