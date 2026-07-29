@@ -16,9 +16,7 @@ std::string generateOutputPath(const std::string &inputPath) {
     // TODO: Generate a processed filename beside the input while preserving its extension.
 }
 
-inline std::size_t calculatePadding(std::int32_t width) {
-    return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4;
-}
+std::size_t calculatePadding(std::int32_t width) { return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4; }
 
 std::uint8_t clampColor(double value) {
     if (value <= 0.0) {
