@@ -1,51 +1,61 @@
 #pragma once
 
 #include "bmp24.hpp"
+#include "matrix.hpp"
 
 /**
- * @brief Applies a grayscale filter to the image.
- * @param img Reference to the BMP image to process.
- * @param amount Grayscale intensity factor a ∈ [0.0, 1.0].
- * @return `true` if the filter is applied successfully; `false` if amount is outside the valid range.
+ * @brief Applies a 4x4 color transformation matrix to a pixel.
+ * @param matrix Color filter matrix.
+ * @param pixel Input pixel.
+ * @return Transformed pixel with clamped RGB channels.
  */
-bool applyGrayScale(BMPImage &img, double amount);
+[[nodiscard]]
+Pixel applyColorMatrix(const Matrix4x4 &matrix, const Pixel &pixel);
 
 /**
- * @brief Applies a color inversion (negative) filter to the image.
- * @param img Reference to the BMP image to process.
- * @param amount Inversion intensity factor a ∈ [0.0, 1.0].
- * @return `true` if the filter is applied successfully; `false` if amount is outside the valid range.
+ * @brief Creates a grayscale filter matrix.
+ * @param amount Grayscale intensity factor in the range [0.0, 1.0].
+ * @return A grayscale filter matrix.
  */
-bool applyColorInversion(BMPImage &img, double amount);
+[[nodiscard]]
+Matrix4x4 createGrayscaleMatrix(double amount);
 
 /**
- * @brief Applies a sepia-tone filter to the image.
- * @param img Reference to the BMP image to process.
- * @param amount Sepia intensity factor a ∈ [0.0, 1.0].
- * @return `true` if the filter is applied successfully; `false` if amount is outside the valid range.
+ * @brief Creates a sepia filter matrix.
+ * @param amount Sepia intensity factor in the range [0.0, 1.0].
+ * @return A sepia filter matrix.
  */
-bool applySepia(BMPImage &img, double amount);
+[[nodiscard]]
+Matrix4x4 createSepiaMatrix(double amount);
 
 /**
- * @brief Adjusts the image brightness.
- * @param img Reference to the BMP image to process.
- * @param amount Brightness adjustment factor.
- * @return `true` if the adjustment is applied successfully; `false` if amount is outside the valid range.
+ * @brief Creates a color inversion filter matrix.
+ * @param amount Inversion intensity factor in the range [0.0, 1.0].
+ * @return An inversion filter matrix.
  */
-bool applyBrightness(BMPImage &img, double amount);
+[[nodiscard]]
+Matrix4x4 createInvertMatrix(double amount);
 
 /**
- * @brief Adjusts the image contrast.
- * @param img Reference to the BMP image to process.
- * @param amount Contrast adjustment factor.
- * @return `true` if the adjustment is applied successfully; `false` if amount is outside the valid range.
+ * @brief Creates a brightness adjustment matrix.
+ * @param amount Brightness adjustment factor in the range [0.0, +∞).
+ * @return A brightness adjustment matrix.
  */
-bool applyContrast(BMPImage &img, double amount);
+[[nodiscard]]
+Matrix4x4 createBrightnessMatrix(double amount);
 
 /**
- * @brief Adjusts the image color saturation.
- * @param img Reference to the BMP image to process.
- * @param amount Saturation adjustment factor.
- * @return `true` if the adjustment is applied successfully; `false` if amount is outside the valid range.
+ * @brief Creates a contrast adjustment matrix.
+ * @param amount Contrast adjustment factor in the range [0.0, +∞).
+ * @return A contrast adjustment matrix.
  */
-bool applySaturate(BMPImage &img, double amount);
+[[nodiscard]]
+Matrix4x4 createContrastMatrix(double amount);
+
+/**
+ * @brief Creates a saturation adjustment matrix.
+ * @param amount Saturation adjustment factor in the range [0.0, +∞).
+ * @return A saturation adjustment matrix.
+ */
+[[nodiscard]]
+Matrix4x4 createSaturateMatrix(double amount);

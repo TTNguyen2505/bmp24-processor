@@ -34,36 +34,36 @@ Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY);
 BMPImage applyTransformMatrix(const BMPImage &srcImage, const Matrix3x3 &T);
 
 /**
- * @brief Translates an image.
- * @param img Reference to the image to process.
+ * @brief Creates a translation matrix.
  * @param tx Translation along the x-axis.
  * @param ty Translation along the y-axis.
- * @return true if the transformation is applied successfully; false otherwise.
+ * @return A translation matrix.
  */
-bool applyTranslation(BMPImage &img, double tx, double ty);
+[[nodiscard]]
+Matrix3x3 createTranslationMatrix(double tx, double ty);
 
 /**
- * @brief Scales an image.
- * @param img Reference to the image to process.
+ * @brief Creates a scaling matrix.
  * @param sx Scale factor along the x-axis.
  * @param sy Scale factor along the y-axis.
- * @return true if the transformation is applied successfully; false otherwise.
+ * @return A scaling matrix.
  */
-bool applyScale(BMPImage &img, double sx, double sy);
+[[nodiscard]]
+Matrix3x3 createScaleMatrix(double sx, double sy);
 
 /**
- * @brief Rotates an image.
- * @param img Reference to the image to process.
+ * @brief Creates a rotation matrix.
  * @param theta Rotation angle in radians.
- * @return true if the transformation is applied successfully; false otherwise.
+ * @return A rotation matrix.
  */
-bool applyRotation(BMPImage &img, double theta);
+[[nodiscard]]
+Matrix3x3 createRotationMatrix(double theta);
 
 /**
- * @brief Shears an image.
- * @param img Reference to the image to process.
+ * @brief Creates a shear matrix.
  * @param alpha Shear angle along the x-axis.
  * @param beta Shear angle along the y-axis.
- * @return true if the transformation is applied successfully; false otherwise.
+ * @return A shear matrix.
  */
-bool applyShear(BMPImage &img, double alpha, double beta);
+[[nodiscard]]
+Matrix3x3 createShearMatrix(double alpha, double beta);
