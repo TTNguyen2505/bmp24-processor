@@ -52,7 +52,7 @@ std::string generateOutputPath(const std::string &inputPath);
  * @return Number of padding bytes (0-3).
  */
 [[nodiscard]]
-inline std::size_t calculatePadding(std::int32_t width);
+std::size_t calculatePadding(std::int32_t width);
 
 /**
  * @brief Clamps a color value to the valid 8-bit range [0, 255].
