@@ -19,3 +19,7 @@ void setWidth(BMPImage &image, std::int32_t width) {
 void setHeight(BMPImage &image, std::int32_t height) {
     std::visit([height](auto &header) { header.height = height; }, image.infoHeader);
 }
+
+void setImageSize(BMPImage &image, std::uint32_t size) {
+    std::visit([size](auto &header) { header.sizeImage = size; }, image.infoHeader);
+}

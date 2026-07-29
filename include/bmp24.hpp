@@ -138,4 +138,14 @@ void setWidth(BMPImage &image, std::int32_t width);
  */
 void setHeight(BMPImage &image, std::int32_t height);
 
+/**
+ * @brief Sets the size of the raw pixel data in a BMP image.
+ *
+ * Updates the @c sizeImage field of the underlying DIB header.
+ *
+ * @param image The BMP image.
+ * @param size The size of the raw pixel data in bytes.
+ */
+void setImageSize(BMPImage &image, std::uint32_t size);
+
 #pragma pack(pop)
