@@ -20,15 +20,3 @@ struct CoordinateVector3 {
  */
 [[nodiscard]]
 CoordinateVector3 pointToCoordinate3(double x, double y);
-
-/**
- * @brief Converts a homogeneous coordinate vector back to a 2D point.
- *
- * If the homogeneous coordinate is not equal to 1.0, the coordinates are
- * normalized by dividing x and y by w.
- *
- * @param point Input homogeneous coordinate vector.
- * @return std::pair<double, double> The resulting Cartesian coordinates.
- */
-[[nodiscard]]
-std::pair<double, double> coordinate3ToPoint(const CoordinateVector3 &point);
