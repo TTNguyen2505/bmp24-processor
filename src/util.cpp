@@ -22,19 +22,25 @@ std::string generateOutputPath(const std::string &inputPath) {
 std::size_t calculatePadding(std::int32_t width) { return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4; }
 
 std::uint8_t clampColor(double value) {
-    if (value <= 0.0) {
-        return 0u;
-    }
-    if (value >= 255.0) {
-        return 255u;
-    }
-    return static_cast<std::uint8_t>(value + 0.5);
+    // TODO: Restrict a floating-point channel value to the valid 8-bit range.
 }
 
-Pixel getPixelSafe(const BMPImage &img, std::int32_t x, std::int32_t y) {
-    if (x < 0 || x >= getWidth(img) || y < 0 || y >= getHeight(img)) {
-        return Pixel{0, 0, 0};
+// Lấy pixel tại tọa độ (x, y) một cách an toàn.
+// Nếu tọa độ ngoài phạm vi thì trả về pixel đen thay vì gây lỗi.
+Pixel getPixelSafe(const BMPImage &img,
+                   std::int32_t x,
+                   std::int32_t y) {
+    const std::int32_t width = getWidth(img);
+    const std::int32_t height = std::abs(getHeight(img));
+
+    if (x < 0 || y < 0 || x >= width || y >= height) {
+        return Pixel{};
     }
 
-    return img.data[y * getWidth(img) + x];
+    const std::size_t index =
+        static_cast<std::size_t>(y) *
+            static_cast<std::size_t>(width) +
+        static_cast<std::size_t>(x);
+
+    return img.data[index];
 }
