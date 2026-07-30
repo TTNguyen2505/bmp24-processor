@@ -1,19 +1,32 @@
 #include "../include/util.hpp"
 
-BMPImage createImage(std::int32_t width, std::int32_t height) {
-    // TODO: Create initialized 24-bit BMP headers, pixel storage, and black image pixels.
-}
+#include <chrono>
+#include <filesystem>
 
 bool loadBMP(const std::string &filename, BMPImage &img) {
-    // TODO: Validate and load supported uncompressed 24-bit BMP files with correct padding.
+    // TODO: Validate and load supported uncompressed 24-bit BMP files with correct padding.'
+    return false;
 }
 
 bool saveBMP(const std::string &filename, const BMPImage &img) {
     // TODO: Write valid BMP headers, padded rows, pixel data, and report file errors.
+    return false;
 }
 
 std::string generateOutputPath(const std::string &inputPath) {
-    // TODO: Generate a processed filename beside the input while preserving its extension.
+    namespace fs = std::filesystem;
+
+    const auto now = std::chrono::system_clock::now();
+    const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+    const fs::path path(inputPath);
+    const fs::path parentDir = path.parent_path();
+    const std::string stem = path.stem().string();
+    const std::string extension = path.extension().string();
+
+    const std::string newFilename = stem + "-" + std::to_string(ms) + extension;
+
+    return parentDir.empty() ? newFilename : (parentDir / newFilename).string();
 }
 
 std::size_t calculatePadding(std::int32_t width) { return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4; }

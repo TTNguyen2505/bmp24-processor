@@ -6,18 +6,6 @@
 #include "bmp24.hpp"
 
 /**
- * @brief Creates a new BMP image with the specified dimensions.
- *
- * All pixels are initialized to black (0, 0, 0).
- *
- * @param width Image width in pixels.
- * @param height Image height in pixels.
- * @return Initialized `BMPImage` object.
- */
-[[nodiscard]]
-BMPImage createImage(std::int32_t width, std::int32_t height);
-
-/**
  * @brief Loads a 24-bit BMP image from a file.
  *
  * @param filename Input BMP file path.
@@ -36,9 +24,10 @@ bool loadBMP(const std::string &filename, BMPImage &img);
 bool saveBMP(const std::string &filename, const BMPImage &img);
 
 /**
- * @brief Generates an output file path based on the input file name.
+ * @brief Generates an output file path based on the input file name and current timestamp.
  *
- * Example: input.bmp -> input_processed.bmp
+ * Example: "input.bmp" -> "input-1718293849123.bmp"
+ *          "dir/image.jpg" -> "dir/image-1718293849123.jpg"
  *
  * @param inputPath Input file path.
  * @return Generated output file path.
