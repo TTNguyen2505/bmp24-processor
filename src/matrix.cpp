@@ -75,3 +75,5 @@ CoordinateVector3 operator*(const Matrix3x3 &mat, const CoordinateVector3 &vec) 
 
     return result;
 }
+
+Matrix3x3 createIdentityMatrix() { return Matrix3x3{{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}}; }

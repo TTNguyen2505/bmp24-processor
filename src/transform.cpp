@@ -22,12 +22,16 @@ double degToRad(double degree) {
     return degree * PI / 180.0;
 }
 
-TransformedImageBounds calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T) {
-    const double right = static_cast<double>(srcWidth - 1);
-    const double bottom = static_cast<double>(srcHeight - 1);
+TransformedImageBounds calculateNewDimensions(const TransformedImageBounds &bounds, const Matrix3x3 &T) {
 
-    const CoordinateVector3 corners[4] = {T * CoordinateVector3{0.0, 0.0, 1.0}, T * CoordinateVector3{right, 0.0, 1.0},
-                                          T * CoordinateVector3{0.0, bottom, 1.0},
+    const double left = static_cast<double>(bounds.minX);
+    const double top = static_cast<double>(bounds.minY);
+
+    const double right = left + bounds.width - 1.0;
+    const double bottom = top + bounds.height - 1.0;
+
+    const CoordinateVector3 corners[4] = {T * CoordinateVector3{left, top, 1.0}, T * CoordinateVector3{right, top, 1.0},
+                                          T * CoordinateVector3{left, bottom, 1.0},
                                           T * CoordinateVector3{right, bottom, 1.0}};
 
     double minX = corners[0].x;
@@ -35,22 +39,23 @@ TransformedImageBounds calculateNewDimensions(int srcWidth, int srcHeight, const
     double minY = corners[0].y;
     double maxY = corners[0].y;
 
-    for (int i = 1; i < 4; ++i) {
+    for (std::size_t i = 1; i < 4; ++i) {
         minX = std::min(minX, corners[i].x);
         maxX = std::max(maxX, corners[i].x);
+
         minY = std::min(minY, corners[i].y);
         maxY = std::max(maxY, corners[i].y);
     }
 
-    const std::int32_t offsetX = static_cast<std::int32_t>(std::floor(minX));
+    const std::int32_t newMinX = static_cast<std::int32_t>(std::floor(minX));
 
-    const std::int32_t offsetY = static_cast<std::int32_t>(std::floor(minY));
+    const std::int32_t newMinY = static_cast<std::int32_t>(std::floor(minY));
 
-    const std::int32_t width = static_cast<std::int32_t>(std::ceil(maxX)) - offsetX + 1;
+    const std::int32_t newWidth = static_cast<std::int32_t>(std::ceil(maxX)) - newMinX + 1;
 
-    const std::int32_t height = static_cast<std::int32_t>(std::ceil(maxY)) - offsetY + 1;
+    const std::int32_t newHeight = static_cast<std::int32_t>(std::ceil(maxY)) - newMinY + 1;
 
-    return {width, height, offsetX, offsetY};
+    return {newWidth, newHeight, newMinX, newMinY};
 }
 
 Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY) {
@@ -106,7 +111,7 @@ Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY) {
 }
 
 BMPImage applyTransformMatrix(const BMPImage &srcImage, const Matrix3x3 &T) {
-    const TransformedImageBounds bounds = calculateNewDimensions(getWidth(srcImage), getHeight(srcImage), T);
+    const TransformedImageBounds bounds = calculateNewDimensions(getImageBounds(srcImage), T);
 
     BMPImage dstImage = srcImage;
 
@@ -227,4 +232,36 @@ Matrix3x3 createShearMatrix(double alpha, double beta) {
     mat.data[2][2] = 1.0;
 
     return mat;
+}
+
+
+/**
+ * @brief Creates a transformation matrix about the center of an image.
+ *
+ * The transformation is constructed as:
+ *      T(center) * M * T(-center)
+ * where M is the transformation matrix defined about the origin.
+ *
+ * @param transform Transformation matrix about the origin.
+ * @param bounds Bounding information of the current image.
+ * @return A transformation matrix about the image center.
+ */
+[[nodiscard]]
+Matrix3x3 createCenteredTransform(const Matrix3x3 &transform, const TransformedImageBounds &bounds) {
+    const double centerX = bounds.minX + (bounds.width - 1) / 2.0;
+    const double centerY = bounds.minY + (bounds.height - 1) / 2.0;
+
+    return createTranslationMatrix(centerX, centerY) * transform * createTranslationMatrix(-centerX, -centerY);
+}
+
+Matrix3x3 createRotationCenterMatrix(double angle, const TransformedImageBounds &bounds) {
+    return createCenteredTransform(createRotationMatrix(angle), bounds);
+}
+
+Matrix3x3 createScaleCenterMatrix(double scaleX, double scaleY, const TransformedImageBounds &bounds) {
+    return createCenteredTransform(createScaleMatrix(scaleX, scaleY), bounds);
+}
+
+Matrix3x3 createShearCenterMatrix(double shearX, double shearY, const TransformedImageBounds &bounds) {
+    return createCenteredTransform(createShearMatrix(shearX, shearY), bounds);
 }
