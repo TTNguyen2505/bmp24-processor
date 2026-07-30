@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
     src/util.cpp
     src/coordinate.cpp
     src/color.cpp
+    src/image.cpp
+    src/file_system.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

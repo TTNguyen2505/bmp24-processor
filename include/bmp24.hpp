@@ -202,4 +202,30 @@ const BMPInfoHeader &getInfoHeader(const BMPImage &image);
 [[nodiscard]]
 BMPInfoHeader &getInfoHeader(BMPImage &image);
 
+/**
+ * @brief Calculates the padding bytes required for each BMP row.
+ *
+ * @param width Image width in pixels.
+ * @return Number of padding bytes (0-3).
+ */
+[[nodiscard]]
+std::size_t calculatePadding(std::int32_t width);
+
+/**
+ * @brief Loads a 24-bit BMP image from a file.
+ *
+ * @param filename Input BMP file path.
+ * @param img Destination image object.
+ * @return true if the image is loaded successfully; otherwise false.
+ */
+bool loadBMP(const std::string &filename, BMPImage &img);
+
+/**
+ * @brief Saves a BMP image to a file.
+ *
+ * @param filename Output BMP file path.
+ * @param img Image to save.
+ * @return true if the image is saved successfully; otherwise false.
+ */
+bool saveBMP(const std::string &filename, const BMPImage &img);
 #pragma pack(pop)

@@ -37,3 +37,12 @@ std::uint8_t doubleToByte(double value);
  */
 [[nodiscard]]
 Pixel color4ToPixel(const ColorVector4 &c);
+
+/**
+ * @brief Clamps a color value to the valid 8-bit range [0, 255].
+ *
+ * @param value Input color value.
+ * @return Clamped color value.
+ */
+[[nodiscard]]
+std::uint8_t clampColor(double value);

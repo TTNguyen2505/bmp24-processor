@@ -1,5 +1,6 @@
 #include "../include/color_filter.hpp"
-#include "../include/util.hpp"
+
+#include "../include/color.hpp"
 
 Matrix4x4 createGrayscaleMatrix(double amount) {
     // Grayscale transformation using luminance weights: 0.299R + 0.587G + 0.114B

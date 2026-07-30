@@ -12,3 +12,12 @@ std::uint8_t doubleToByte(double value) {
 }
 
 Pixel color4ToPixel(const ColorVector4 &c) { return Pixel{doubleToByte(c.b), doubleToByte(c.r), doubleToByte(c.r)}; }
+
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+
+std::uint8_t clampColor(double value) {
+    double rounded = std::round(value);
+    return static_cast<std::uint8_t>(std::clamp(rounded, 0.0, 255.0));
+}

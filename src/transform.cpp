@@ -4,7 +4,8 @@
 #include <cmath>
 #include <utility>
 
-#include "../include/util.hpp"
+#include "../include/color.hpp"
+#include "../include/image.hpp"
 
 constexpr double PI = 3.14159265358979323846;
 
