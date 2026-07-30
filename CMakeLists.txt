@@ -20,8 +20,9 @@ set(PROJECT_SOURCES
     src/file_system.cpp
     src/geometry.cpp
     src/image.cpp
-    src/matrix.cpp
+    src/interpolation.cpp
     src/main.cpp
+    src/matrix.cpp
     src/transform.cpp
 )
 
