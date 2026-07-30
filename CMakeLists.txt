@@ -18,6 +18,8 @@ set(PROJECT_SOURCES
     src/matrix.cpp
     src/transform.cpp
     src/util.cpp
+    src/coordinate.cpp
+    src/color.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
