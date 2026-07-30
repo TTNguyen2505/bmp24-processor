@@ -15,14 +15,18 @@ struct TransformedImageBounds {
 };
 
 /**
- * @brief Computes the dimensions of an image after applying a transformation matrix.
- * @param srcWidth Width of the source image.
- * @param srcHeight Height of the source image.
- * @param T 3×3 transformation matrix.
- * @return A pair containing the new image width and height.
+ * @brief Computes the bounding box of an image after applying a transformation.
+ *
+ * Transforms the four corners of the current image bounds using the specified
+ * transformation matrix and returns the smallest axis-aligned bounding box that
+ * contains the transformed image.
+ *
+ * @param bounds Bounding information of the current image.
+ * @param T 3×3 homogeneous transformation matrix.
+ * @return Bounding information of the transformed image.
  */
 [[nodiscard]]
-TransformedImageBounds calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T);
+TransformedImageBounds calculateNewDimensions(const TransformedImageBounds &bounds, const Matrix3x3 &T);
 
 /**
  * @brief Computes a pixel value at a continuous source coordinate
@@ -79,3 +83,49 @@ Matrix3x3 createRotationMatrix(double theta);
  */
 [[nodiscard]]
 Matrix3x3 createShearMatrix(double alpha, double beta);
+
+/**
+ * @brief Creates a rotation matrix about the center of an image.
+ *
+ * The resulting transformation first translates the image center to the origin,
+ * applies the rotation, and then translates the image back to its original position.
+ *
+ * @param angle Rotation angle in degrees.
+ * @param bounds Bounding information of the current image.
+ * @return A 3×3 homogeneous transformation matrix representing the rotation
+ *         about the image center.
+ */
+[[nodiscard]]
+Matrix3x3 createRotationCenterMatrix(double angle, const TransformedImageBounds &bounds);
+
+/**
+ * @brief Creates a scaling matrix about the center of an image.
+ *
+ * The resulting transformation first translates the image center to the origin,
+ * applies the scaling operation, and then translates the image back to its
+ * original position.
+ *
+ * @param scaleX Scaling factor along the X-axis.
+ * @param scaleY Scaling factor along the Y-axis.
+ * @param bounds Bounding information of the current image.
+ * @return A 3×3 homogeneous transformation matrix representing the scaling
+ *         about the image center.
+ */
+[[nodiscard]]
+Matrix3x3 createScaleCenterMatrix(double scaleX, double scaleY, const TransformedImageBounds &bounds);
+
+/**
+ * @brief Creates a shear matrix about the center of an image.
+ *
+ * The resulting transformation first translates the image center to the origin,
+ * applies the shear transformation, and then translates the image back to its
+ * original position.
+ *
+ * @param shearX Shear factor along the X-axis.
+ * @param shearY Shear factor along the Y-axis.
+ * @param bounds Bounding information of the current image.
+ * @return A 3×3 homogeneous transformation matrix representing the shear
+ *         about the image center.
+ */
+[[nodiscard]]
+Matrix3x3 createShearCenterMatrix(double shearX, double shearY, const TransformedImageBounds &bounds);

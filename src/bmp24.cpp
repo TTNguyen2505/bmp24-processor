@@ -23,3 +23,5 @@ void setHeight(BMPImage &image, std::int32_t height) {
 void setImageSize(BMPImage &image, std::uint32_t size) {
     std::visit([size](auto &header) { header.sizeImage = size; }, image.infoHeader);
 }
+
+TransformedImageBounds getImageBounds(const BMPImage &image) { return {getWidth(image), getHeight(image), 0, 0}; }

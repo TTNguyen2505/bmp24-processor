@@ -6,6 +6,8 @@
 #include <variant>
 #include <vector>
 
+#include "transform.hpp"
+
 #pragma pack(push, 1)
 
 /**
@@ -147,5 +149,17 @@ void setHeight(BMPImage &image, std::int32_t height);
  * @param size The size of the raw pixel data in bytes.
  */
 void setImageSize(BMPImage &image, std::uint32_t size);
+
+/**
+ * @brief Gets the bounding information of a BMP image.
+ *
+ * The returned bounds describe the image in its local coordinate system,
+ * where the top-left pixel is located at (0, 0).
+ *
+ * @param image The BMP image.
+ * @return The bounding information of the image.
+ */
+[[nodiscard]]
+TransformedImageBounds getImageBounds(const BMPImage &image);
 
 #pragma pack(pop)
