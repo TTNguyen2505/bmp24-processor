@@ -3,6 +3,8 @@
 #include <cstring>
 #include <fstream>
 
+std::size_t calculatePadding(std::int32_t width) { return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4; }
+
 template<typename T>
 bool readStruct(std::istream &is, T &value) {
     static_assert(std::is_trivially_copyable_v<T>);

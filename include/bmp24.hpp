@@ -96,21 +96,6 @@ struct BMPImage {
 #pragma pack(pop)
 
 /**
- * @brief Calculates the row padding size in bytes for a BMP image line.
- *
- * In the BMP file format, each scanline must be padded to a multiple of 4 bytes.
- * This function computes the number of padding bytes required at the end of
- * each row based on the image width (assuming 24-bit RGB / 3 bytes per pixel).
- *
- * @param width The width of the image in pixels.
- * @return std::size_t The number of padding bytes per row (in the range [0, 3]).
- *
- * @note Formula used: (4 - ((width * 3) % 4)) % 4
- */
-[[nodiscard]]
-std::size_t calculatePadding(std::int32_t width);
-
-/**
  * @brief Gets the width of a BMP image.
  *
  * @param image The BMP image.

@@ -40,5 +40,3 @@ const BMPInfoHeader &getInfoHeader(const BMPImage &image) {
 BMPInfoHeader &getInfoHeader(BMPImage &image) {
     return std::visit([](auto &h) -> BMPInfoHeader & { return h; }, image.infoHeader);
 }
-
-std::size_t calculatePadding(std::int32_t width) { return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4; }

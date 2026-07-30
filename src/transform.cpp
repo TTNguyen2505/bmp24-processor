@@ -4,6 +4,7 @@
 #include <cmath>
 #include <utility>
 
+#include "../include/bmp_io.hpp"
 #include "../include/color.hpp"
 #include "../include/geometry.hpp"
 #include "../include/image.hpp"
