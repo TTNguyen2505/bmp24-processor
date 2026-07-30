@@ -47,6 +47,10 @@ int main(int argc, char *argv[]) {
     std::cout << "[2/4] Combining transformation matrices..." << std::endl;
 
     hasTransform = !config.transforms.empty();
+    TransformedImageBounds currentBounds = getImageBounds(inputImg);
+
+    Matrix3x3 T = createIdentityMatrix();
+
     for (const auto &op: config.transforms) {
         Matrix3x3 currentT;
 
@@ -56,19 +60,21 @@ int main(int argc, char *argv[]) {
                 break;
 
             case TransformType::Scale:
-                currentT = createScaleMatrix(op.param1, op.param2);
+                currentT = createScaleCenterMatrix(op.param1, op.param2, currentBounds);
                 break;
 
             case TransformType::Rotate:
-                currentT = createRotationMatrix(op.param1);
+                currentT = createRotationCenterMatrix(op.param1, currentBounds);
                 break;
 
             case TransformType::Shear:
-                currentT = createShearMatrix(op.param1, op.param2);
+                currentT = createShearCenterMatrix(op.param1, op.param2, currentBounds);
                 break;
         }
 
         T = currentT * T;
+
+        currentBounds = calculateNewDimensions(currentBounds, currentT);
     }
 
     hasFilter = !config.filters.empty();
