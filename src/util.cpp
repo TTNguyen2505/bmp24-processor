@@ -3,16 +3,6 @@
 #include <chrono>
 #include <filesystem>
 
-bool loadBMP(const std::string &filename, BMPImage &img) {
-    // TODO: Validate and load supported uncompressed 24-bit BMP files with correct padding.'
-    return false;
-}
-
-bool saveBMP(const std::string &filename, const BMPImage &img) {
-    // TODO: Write valid BMP headers, padded rows, pixel data, and report file errors.
-    return false;
-}
-
 std::string generateOutputPath(const std::string &inputPath) {
     namespace fs = std::filesystem;
 
