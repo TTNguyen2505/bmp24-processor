@@ -1,4 +1,5 @@
 #include "../include/cli_parser.hpp"
+
 #include <charconv>
 #include <iostream>
 #include <string>

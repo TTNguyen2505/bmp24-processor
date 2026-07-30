@@ -1,8 +1,18 @@
 #pragma once
 
-#include <tuple>
 #include "bmp24.hpp"
 #include "matrix.hpp"
+
+/**
+ * @struct TransformedImageBounds
+ * @brief Stores the bounding box information of an image after applying a transformation.
+ */
+struct TransformedImageBounds {
+    std::int32_t width{0}; /**< Width of the transformed image in pixels. */
+    std::int32_t height{0}; /**< Height of the transformed image in pixels. */
+    std::int32_t minX{0}; /**< Minimum X-coordinate of the transformed image. */
+    std::int32_t minY{0}; /**< Minimum Y-coordinate of the transformed image. */
+};
 
 /**
  * @brief Computes the dimensions of an image after applying a transformation matrix.
@@ -12,14 +22,16 @@
  * @return A pair containing the new image width and height.
  */
 [[nodiscard]]
-std::pair<int, int> calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T);
+TransformedImageBounds calculateNewDimensions(int srcWidth, int srcHeight, const Matrix3x3 &T);
 
 /**
- * @brief Computes a pixel value using bilinear interpolation.
+ * @brief Computes a pixel value at a continuous source coordinate
+ *        using bilinear interpolation.
+ *
  * @param srcImage Source image.
- * @param srcX Horizontal coordinate in the source image.
- * @param srcY Vertical coordinate in the source image.
- * @return The interpolated pixel.
+ * @param srcX Continuous horizontal coordinate in the source image.
+ * @param srcY Continuous vertical coordinate in the source image.
+ * @return The interpolated pixel value.
  */
 [[nodiscard]]
 Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY);

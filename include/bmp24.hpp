@@ -122,4 +122,30 @@ std::int32_t getHeight(const BMPImage &image);
 [[nodiscard]]
 std::uint16_t getBitCount(const BMPImage &image);
 
+/**
+ * @brief Sets the width of a BMP image.
+ *
+ * @param image The BMP image.
+ * @param width The new image width in pixels.
+ */
+void setWidth(BMPImage &image, std::int32_t width);
+
+/**
+ * @brief Sets the height of a BMP image.
+ *
+ * @param image The BMP image.
+ * @param height The new image height in pixels.
+ */
+void setHeight(BMPImage &image, std::int32_t height);
+
+/**
+ * @brief Sets the size of the raw pixel data in a BMP image.
+ *
+ * Updates the @c sizeImage field of the underlying DIB header.
+ *
+ * @param image The BMP image.
+ * @param size The size of the raw pixel data in bytes.
+ */
+void setImageSize(BMPImage &image, std::uint32_t size);
+
 #pragma pack(pop)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+
 #include "bmp24.hpp"
 
 struct ColorVector4 {
