@@ -168,20 +168,3 @@ const BMPInfoHeader &getInfoHeader(const BMPImage &image);
 [[nodiscard]]
 BMPInfoHeader &getInfoHeader(BMPImage &image);
 
-/**
- * @brief Loads a 24-bit BMP image from a file.
- *
- * @param filename Input BMP file path.
- * @param img Destination image object.
- * @return true if the image is loaded successfully; otherwise false.
- */
-bool loadBMP(const std::string &filename, BMPImage &img);
-
-/**
- * @brief Saves a BMP image to a file.
- *
- * @param filename Output BMP file path.
- * @param img Image to save.
- * @return true if the image is saved successfully; otherwise false.
- */
-bool saveBMP(const std::string &filename, const BMPImage &img);
