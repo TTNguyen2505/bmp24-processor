@@ -1,5 +1,7 @@
 #include "../include/interpolation.hpp"
 
+#include <cmath>
+
 #include "../include/color.hpp"
 #include "../include/image.hpp"
 
