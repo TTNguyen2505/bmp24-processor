@@ -6,6 +6,8 @@
 #include "../include/cli_parser.hpp"
 #include "../include/color_filter.hpp"
 #include "../include/file_system.hpp"
+#include "../include/geometry.hpp"
+#include "../include/image.hpp"
 #include "../include/matrix.hpp"
 #include "../include/transform.hpp"
 
@@ -36,8 +38,6 @@ int main(int argc, char *argv[]) {
         std::cerr << "[ERROR]: Only 24-bit BMP images are supported!" << std::endl;
         return 1;
     }
-
-    Matrix3x3 T = {{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}};
 
     Matrix4x4 F = {{{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}}};
 
