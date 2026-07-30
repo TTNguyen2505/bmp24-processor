@@ -1,4 +1,7 @@
-#include "../include/image.hpp"
+#include "core/image.hpp"
+
+#include <cmath>
+#include <cstddef>
 
 Pixel getPixelSafe(const BMPImage &img, std::int32_t x, std::int32_t y) {
     const std::int32_t width = getWidth(img);

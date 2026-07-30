@@ -2,9 +2,9 @@
 
 #include <cstdint>
 
-#include "bmp24.hpp"
-#include "geometry.hpp"
-#include "matrix.hpp"
+#include "io/bmp24.hpp"
+#include "math/geometry.hpp"
+#include "math/matrix.hpp"
 
 
 /**

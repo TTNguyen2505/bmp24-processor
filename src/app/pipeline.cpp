@@ -1,13 +1,14 @@
-#include "../include/pipeline.hpp"
+#include "app/pipeline.hpp"
 
+#include <cstddef>
 #include <iostream>
 #include <string>
 
-#include "../include/bmp_io.hpp"
-#include "../include/color_filter.hpp"
-#include "../include/file_system.hpp"
-#include "../include/image.hpp"
-#include "../include/transform.hpp"
+#include "core/color_filter.hpp"
+#include "core/image.hpp"
+#include "core/transform.hpp"
+#include "io/bmp_io.hpp"
+#include "io/file_system.hpp"
 
 bool runPipeline(const CommandConfig &config) {
     std::string outputPath = config.outputPath.empty() ? generateOutputPath(config.inputPath) : config.outputPath;

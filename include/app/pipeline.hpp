@@ -1,8 +1,10 @@
 #pragma once
 
-#include "bmp24.hpp"
-#include "cli_parser.hpp"
-#include "matrix.hpp"
+#include <vector>
+
+#include "app/cli_parser.hpp"
+#include "io/bmp24.hpp"
+#include "math/matrix.hpp"
 
 /**
  * @brief Executes the complete image processing pipeline.

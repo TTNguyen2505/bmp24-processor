@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bmp24.hpp"
+#include "io/bmp24.hpp"
 
 /**
  * @brief Computes a pixel value at a continuous source coordinate

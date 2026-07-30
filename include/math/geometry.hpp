@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "matrix.hpp"
+#include "math/matrix.hpp"
 
 /**
  * @brief Converts an angle from degrees to radians.

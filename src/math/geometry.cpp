@@ -1,7 +1,8 @@
-#include "../include/geometry.hpp"
+#include "math/geometry.hpp"
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 constexpr double PI = 3.14159265358979323846;
 
 double degToRad(double degree) { return degree * PI / 180.0; }

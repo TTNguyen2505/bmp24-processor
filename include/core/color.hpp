@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "bmp24.hpp"
+#include "io/bmp24.hpp"
 
 struct ColorVector4 {
     double r{0.0}; /**< Red color component in range [0.0, 255.0] */

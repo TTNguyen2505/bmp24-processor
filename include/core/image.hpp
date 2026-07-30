@@ -1,7 +1,9 @@
 #pragma once
 
-#include "bmp24.hpp"
-#include "transform.hpp"
+#include <cstdint>
+
+#include "io/bmp24.hpp"
+#include "math/geometry.hpp"
 
 /**
  * @brief Returns the pixel at the specified coordinates.

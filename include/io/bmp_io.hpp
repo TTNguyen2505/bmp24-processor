@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
 #include <string>
 
-#include "bmp24.hpp"
+#include "io/bmp24.hpp"
 
 /**
  * @brief Calculates the row padding size in bytes for a BMP image line.

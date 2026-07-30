@@ -1,7 +1,10 @@
-#include "../include/bmp_io.hpp"
+#include "io/bmp_io.hpp"
 
+#include <cstddef>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <type_traits>
 
 std::size_t calculatePadding(std::int32_t width) { return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4; }
 
