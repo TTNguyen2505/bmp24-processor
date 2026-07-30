@@ -3,12 +3,13 @@
 #include <algorithm>
 #include <cstdint>
 #include <iostream>
+#include <string>
 #include <variant>
 #include <vector>
 
-#include "transform.hpp"
-
 #pragma pack(push, 1)
+
+struct TransformedImageBounds;
 
 /**
  * @brief BMP File Header structure (14 bytes)
@@ -161,5 +162,43 @@ void setImageSize(BMPImage &image, std::uint32_t size);
  */
 [[nodiscard]]
 TransformedImageBounds getImageBounds(const BMPImage &image);
+
+/**
+ * @brief Loads a BMP image from a specified file.
+ *
+ * @param[in] filename Path to the input BMP file.
+ * @param[out] image Destination object to store the loaded BMP image data.
+ * @return `true` if the image was successfully loaded, `false` otherwise.
+ */
+[[nodiscard]]
+bool loadBMP(const std::string &filename, BMPImage &image);
+
+/**
+ * @brief Saves a BMP image to a specified file.
+ *
+ * @param[in] filename Path to the output destination file.
+ * @param[in] image BMPImage object containing the data to write.
+ * @return `true` if the image was successfully saved, `false` otherwise.
+ */
+[[nodiscard]]
+bool saveBMP(const std::string &filename, const BMPImage &image);
+
+/**
+ * @brief Retrieves a read-only reference to the header info of a BMP image.
+ *
+ * @param[in] image The source BMPImage object.
+ * @return A constant reference to the underlying BMPInfoHeader object.
+ */
+[[nodiscard]]
+const BMPInfoHeader &getInfoHeader(const BMPImage &image);
+
+/**
+ * @brief Retrieves a mutable reference to the header info of a BMP image.
+ *
+ * @param[in,out] image The target BMPImage object.
+ * @return A mutable reference to the underlying BMPInfoHeader object.
+ */
+[[nodiscard]]
+BMPInfoHeader &getInfoHeader(BMPImage &image);
 
 #pragma pack(pop)
