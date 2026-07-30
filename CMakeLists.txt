@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(PROJECT_SOURCES
+    src/bmp_io.cpp
     src/bmp24.cpp
     src/cli_parser.cpp
     src/color_filter.cpp
