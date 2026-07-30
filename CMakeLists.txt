@@ -23,6 +23,7 @@ set(PROJECT_SOURCES
     src/interpolation.cpp
     src/main.cpp
     src/matrix.cpp
+    src/pipeline.cpp
     src/transform.cpp
 )
 
