@@ -239,9 +239,22 @@ bool saveBMP(const std::string &filename, const BMPImage &img) {
     return true;
 }
 
+// Tạo tên file đầu ra bằng cách chèn chuỗi "_processed"
+// trước phần mở rộng.
 std::string generateOutputPath(const std::string &inputPath) {
-    // TODO: Generate a processed filename beside the input while preserving its extension.
+    const std::size_t dotPosition = inputPath.find_last_of('.');
+
+    if (dotPosition == std::string::npos) {
+        return inputPath + "_processed";
+    }
+
+    return inputPath.substr(0, dotPosition) +
+           "_processed" +
+           inputPath.substr(dotPosition);
 }
+
+// Tính số byte padding cần thêm để mỗi hàng dữ liệu pixel
+// có độ dài chia hết cho 4.
 
 inline std::size_t calculatePadding(std::int32_t width) {
     return (4 - ((static_cast<std::size_t>(width) * 3) % 4)) % 4;
