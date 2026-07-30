@@ -150,3 +150,104 @@ bool loadBMP(const std::string &filename, BMPImage &image) {
 
     return readPixelData(file, image.fileHeader, info, image.data);
 }
+
+template<typename T>
+bool writeStruct(std::ostream &os, const T &value) {
+    static_assert(std::is_trivially_copyable_v<T>);
+    return static_cast<bool>(os.write(reinterpret_cast<const char *>(&value), sizeof(T)));
+}
+
+bool writeFileHeader(std::ostream &os, BMPFileHeader header) {
+    header.type = 0x4D42;
+    header.reserved1 = 0;
+    header.reserved2 = 0;
+    return writeStruct(os, header);
+}
+
+bool writeDIBHeader(std::ostream &os, DIBHeader header) {
+    return std::visit(
+            [&os](auto &dibHeader) {
+                using HeaderT = std::decay_t<decltype(dibHeader)>;
+                dibHeader.size = static_cast<std::uint32_t>(sizeof(HeaderT));
+                return writeStruct(os, dibHeader);
+            },
+            header);
+}
+
+bool writePixelData(std::ostream &os, const BMPImage &image) {
+    const auto width = getWidth(image);
+    const auto height = getHeight(image);
+    const auto absHeight = static_cast<std::size_t>(std::abs(height));
+
+    if (width <= 0 || height == 0)
+        return false;
+
+    const auto expectedPixels = static_cast<std::size_t>(width) * absHeight;
+    if (image.data.size() != expectedPixels)
+        return false;
+
+    const std::size_t rowBytes = static_cast<std::size_t>(width) * sizeof(Pixel);
+    const std::size_t rowSize = rowBytes + calculatePadding(width);
+    const bool bottomUp = height > 0;
+
+    std::vector<std::uint8_t> row(rowSize, 0u);
+
+    for (std::size_t y = 0; y < absHeight; ++y) {
+        const std::size_t srcRow = bottomUp ? (absHeight - 1 - y) : y;
+        const Pixel *srcPixels = image.data.data() + srcRow * static_cast<std::size_t>(width);
+
+        std::memcpy(row.data(), srcPixels, rowBytes);
+
+        if (!os.write(reinterpret_cast<const char *>(row.data()), static_cast<std::streamsize>(rowSize)))
+            return false;
+    }
+
+    return true;
+}
+
+void updateHeaders(BMPImage &image) {
+    auto &file = image.fileHeader;
+    auto &info = getInfoHeader(image);
+
+    const auto width = getWidth(image);
+    const auto height = std::abs(getHeight(image));
+    const auto padding = calculatePadding(width);
+
+    info.size =
+            static_cast<std::uint32_t>(std::visit([](const auto &header) { return sizeof(header); }, image.infoHeader));
+    info.planes = 1;
+    info.bitCount = 24;
+    info.compression = 0;
+    info.colorsUsed = 0;
+    info.colorsImportant = 0;
+    info.sizeImage = static_cast<std::uint32_t>((static_cast<std::size_t>(width) * sizeof(Pixel) + padding) *
+                                                static_cast<std::size_t>(height));
+
+    file.type = 0x4D42;
+    file.reserved1 = 0;
+    file.reserved2 = 0;
+    file.offset = sizeof(BMPFileHeader) + info.size;
+    file.size = file.offset + info.sizeImage;
+}
+
+bool saveBMP(const std::string &filename, const BMPImage &image) {
+    std::ofstream file(filename, std::ios::binary);
+
+    if (!file)
+        return false;
+
+    BMPImage output = image;
+
+    if (!validateBMPHeader(getInfoHeader(output)))
+        return false;
+
+    updateHeaders(output);
+
+    if (!writeFileHeader(file, output.fileHeader))
+        return false;
+
+    if (!writeDIBHeader(file, output.infoHeader))
+        return false;
+
+    return writePixelData(file, output);
+}
