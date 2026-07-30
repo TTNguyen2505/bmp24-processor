@@ -3,12 +3,10 @@
 #include <iostream>
 #include <string>
 
-#include "../include/bmp24.hpp"
 #include "../include/bmp_io.hpp"
 #include "../include/color_filter.hpp"
 #include "../include/file_system.hpp"
 #include "../include/image.hpp"
-#include "../include/matrix.hpp"
 #include "../include/transform.hpp"
 
 bool runPipeline(const CommandConfig &config) {
@@ -26,75 +24,16 @@ bool runPipeline(const CommandConfig &config) {
         return 1;
     }
 
-    Matrix4x4 F = {{{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}}};
-
     bool hasTransform = false;
     bool hasFilter = false;
 
     std::cout << "[2/4] Combining transformation matrices..." << std::endl;
 
     hasTransform = !config.transforms.empty();
-    TransformedImageBounds currentBounds = getImageBounds(inputImg);
-
-    Matrix3x3 T = createIdentityMatrix();
-
-    for (const auto &op: config.transforms) {
-        Matrix3x3 currentT;
-
-        switch (op.type) {
-            case TransformType::Translate:
-                currentT = createTranslationMatrix(op.param1, op.param2);
-                break;
-
-            case TransformType::Scale:
-                currentT = createScaleCenterMatrix(op.param1, op.param2, currentBounds);
-                break;
-
-            case TransformType::Rotate:
-                currentT = createRotationCenterMatrix(op.param1, currentBounds);
-                break;
-
-            case TransformType::Shear:
-                currentT = createShearCenterMatrix(op.param1, op.param2, currentBounds);
-                break;
-        }
-
-        T = currentT * T;
-
-        currentBounds = calculateNewDimensions(currentBounds, currentT);
-    }
+    Matrix3x3 T = buildTransformMatrix(inputImg, config.transforms);
 
     hasFilter = !config.filters.empty();
-    for (const auto &op: config.filters) {
-        Matrix4x4 currentF;
-
-        switch (op.type) {
-            case FilterType::Grayscale:
-                currentF = createGrayscaleMatrix(op.param1);
-                break;
-
-            case FilterType::Sepia:
-                currentF = createSepiaMatrix(op.param1);
-                break;
-
-            case FilterType::Invert:
-                currentF = createInvertMatrix(op.param1);
-                break;
-
-            case FilterType::Brightness:
-                currentF = createBrightnessMatrix(op.param1);
-                break;
-
-            case FilterType::Contrast:
-                currentF = createContrastMatrix(op.param1);
-                break;
-
-            case FilterType::Saturate:
-                currentF = createSaturateMatrix(op.param1);
-                break;
-        }
-        F = currentF * F;
-    }
+    Matrix4x4 F = buildColorMatrix(config.filters);
 
     BMPImage processedImg = inputImg;
 
@@ -126,4 +65,74 @@ bool runPipeline(const CommandConfig &config) {
 
     std::cout << "Image processing completed successfully!" << std::endl;
     return true;
+}
+
+Matrix3x3 buildTransformMatrix(const BMPImage &image, const std::vector<TransformOperation> &operations) {
+    TransformedImageBounds currentBounds = getImageBounds(image);
+
+    Matrix3x3 T = createIdentityMatrix();
+
+    for (const auto &op: operations) {
+        Matrix3x3 currentT;
+
+        switch (op.type) {
+            case TransformType::Translate:
+                currentT = createTranslationMatrix(op.param1, op.param2);
+                break;
+
+            case TransformType::Scale:
+                currentT = createScaleCenterMatrix(op.param1, op.param2, currentBounds);
+                break;
+
+            case TransformType::Rotate:
+                currentT = createRotationCenterMatrix(op.param1, currentBounds);
+                break;
+
+            case TransformType::Shear:
+                currentT = createShearCenterMatrix(op.param1, op.param2, currentBounds);
+                break;
+        }
+
+        T = currentT * T;
+
+        currentBounds = calculateNewDimensions(currentBounds, currentT);
+    }
+
+    return T;
+}
+
+Matrix4x4 buildColorMatrix(const std::vector<FilterOperation> &operations) {
+    Matrix4x4 F = {{{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}}};
+
+    for (const auto &op: operations) {
+        Matrix4x4 currentF;
+
+        switch (op.type) {
+            case FilterType::Grayscale:
+                currentF = createGrayscaleMatrix(op.param1);
+                break;
+
+            case FilterType::Sepia:
+                currentF = createSepiaMatrix(op.param1);
+                break;
+
+            case FilterType::Invert:
+                currentF = createInvertMatrix(op.param1);
+                break;
+
+            case FilterType::Brightness:
+                currentF = createBrightnessMatrix(op.param1);
+                break;
+
+            case FilterType::Contrast:
+                currentF = createContrastMatrix(op.param1);
+                break;
+
+            case FilterType::Saturate:
+                currentF = createSaturateMatrix(op.param1);
+                break;
+        }
+        F = currentF * F;
+    }
+    return F;
 }
