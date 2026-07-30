@@ -147,8 +147,96 @@ bool loadBMP(const std::string &filename, BMPImage &img) {
     return true;
 }
 
+// Ghi dữ liệu ảnh BMP ra file.
 bool saveBMP(const std::string &filename, const BMPImage &img) {
-    // TODO: Write valid BMP headers, padded rows, pixel data, and report file errors.
+    std::ofstream output(filename, std::ios::binary);
+    if (!output) {
+        return false;
+    }
+
+    const auto width = getWidth(img);
+    const auto height = getHeight(img);
+
+    if (width <= 0 || height == 0) {
+        return false;
+    }
+
+    const std::int32_t absHeight = std::abs(height);
+    const std::size_t rowStride =
+        static_cast<std::size_t>(width) * 3 + calculatePadding(width);
+    const std::size_t pixelDataSize =
+        rowStride * static_cast<std::size_t>(absHeight);
+
+    std::size_t dibSize = std::visit([](const auto &header) {
+        return static_cast<std::size_t>(header.size);
+    }, img.infoHeader);
+
+    BMPFileHeader fileHeader{};
+    fileHeader.type = 0x4D42;
+    fileHeader.offset = static_cast<std::uint32_t>(14 + dibSize);
+    fileHeader.size =
+        static_cast<std::uint32_t>(fileHeader.offset + pixelDataSize);
+
+    // Tạo một bản sao header để cập nhật kích thước dữ liệu thực tế trước khi ghi.
+    auto headerCopy = img.infoHeader;
+    std::visit([&headerCopy, pixelDataSize](auto &header) {
+        header.sizeImage = static_cast<std::uint32_t>(pixelDataSize);
+        header.size = static_cast<std::uint32_t>(header.size);
+    }, headerCopy);
+
+    output.write(reinterpret_cast<const char *>(&fileHeader),
+                 sizeof(fileHeader));
+    if (!output) {
+        return false;
+    }
+
+    std::visit([&output](const auto &header) {
+        output.write(reinterpret_cast<const char *>(&header),
+                     sizeof(header));
+    }, headerCopy);
+
+    if (!output) {
+        return false;
+    }
+
+    if (img.data.size() <
+        static_cast<std::size_t>(width) *
+        static_cast<std::size_t>(absHeight)) {
+        return false;
+    }
+
+    std::vector<std::uint8_t> rowBuffer(rowStride, 0);
+
+    for (std::int32_t y = 0; y < absHeight; ++y) {
+        // Khi ghi ảnh, cần đảo ngược thứ tự hàng nếu chiều cao dương
+        // để phù hợp với chuẩn BMP bottom-up.
+        const std::int32_t sourceRow =
+            (height > 0) ? (absHeight - 1 - y) : y;
+
+        for (std::int32_t x = 0; x < width; ++x) {
+            const std::size_t index =
+                static_cast<std::size_t>(sourceRow) *
+                    static_cast<std::size_t>(width) +
+                static_cast<std::size_t>(x);
+
+            const Pixel &pixel = img.data[index];
+            const std::size_t offset =
+                static_cast<std::size_t>(x) * 3;
+
+            rowBuffer[offset] = pixel.blue;
+            rowBuffer[offset + 1] = pixel.green;
+            rowBuffer[offset + 2] = pixel.red;
+        }
+
+        output.write(reinterpret_cast<const char *>(rowBuffer.data()),
+                     rowStride);
+
+        if (!output) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 std::string generateOutputPath(const std::string &inputPath) {
