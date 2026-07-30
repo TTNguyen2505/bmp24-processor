@@ -1,6 +1,6 @@
 #pragma once
 
-#include "coordinate.hpp"
+#include "math/coordinate.hpp"
 
 /**
  * @struct Matrix3x3

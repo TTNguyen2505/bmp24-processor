@@ -1,114 +1,15 @@
-#include "../include/transform.hpp"
+#include "core/transform.hpp"
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <utility>
 
-#include "../include/util.hpp"
-
-constexpr double PI = 3.14159265358979323846;
-
-/**
- * @brief Converts an angle from degrees to radians.
- *
- * Calculates the equivalent angle in radians using the formula: rad = deg * PI / 180.
- * Essential for standard trigonometric functions (sin, cos, tan) in transformation matrix calculations.
- *
- * @param degree The angle value measured in degrees.
- * @return double The equivalent angle value measured in radians.
- */
-[[nodiscard]]
-double degToRad(double degree) {
-    return degree * PI / 180.0;
-}
-
-TransformedImageBounds calculateNewDimensions(const TransformedImageBounds &bounds, const Matrix3x3 &T) {
-
-    const double left = static_cast<double>(bounds.minX);
-    const double top = static_cast<double>(bounds.minY);
-
-    const double right = left + bounds.width - 1.0;
-    const double bottom = top + bounds.height - 1.0;
-
-    const CoordinateVector3 corners[4] = {T * CoordinateVector3{left, top, 1.0}, T * CoordinateVector3{right, top, 1.0},
-                                          T * CoordinateVector3{left, bottom, 1.0},
-                                          T * CoordinateVector3{right, bottom, 1.0}};
-
-    double minX = corners[0].x;
-    double maxX = corners[0].x;
-    double minY = corners[0].y;
-    double maxY = corners[0].y;
-
-    for (std::size_t i = 1; i < 4; ++i) {
-        minX = std::min(minX, corners[i].x);
-        maxX = std::max(maxX, corners[i].x);
-
-        minY = std::min(minY, corners[i].y);
-        maxY = std::max(maxY, corners[i].y);
-    }
-
-    const std::int32_t newMinX = static_cast<std::int32_t>(std::floor(minX));
-
-    const std::int32_t newMinY = static_cast<std::int32_t>(std::floor(minY));
-
-    const std::int32_t newWidth = static_cast<std::int32_t>(std::ceil(maxX)) - newMinX + 1;
-
-    const std::int32_t newHeight = static_cast<std::int32_t>(std::ceil(maxY)) - newMinY + 1;
-
-    return {newWidth, newHeight, newMinX, newMinY};
-}
-
-Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY) {
-    const std::int32_t x0 = static_cast<std::int32_t>(std::floor(srcX));
-    const std::int32_t y0 = static_cast<std::int32_t>(std::floor(srcY));
-
-    // Outside the source image
-    if (x0 < 0 || x0 >= getWidth(srcImage) || y0 < 0 || y0 >= getHeight(srcImage)) {
-        return Pixel{0, 0, 0};
-    }
-
-    const double dx = srcX - x0;
-    const double dy = srcY - y0;
-
-    // Bottom-right corner
-    if (x0 == getWidth(srcImage) - 1 && y0 == getHeight(srcImage) - 1) {
-        return getPixelSafe(srcImage, x0, y0);
-    }
-
-    // Right border
-    if (x0 == getWidth(srcImage) - 1) {
-        const Pixel p0 = getPixelSafe(srcImage, x0, y0);
-        const Pixel p1 = getPixelSafe(srcImage, x0, y0 + 1);
-
-        return Pixel{clampColor((1.0 - dy) * p0.red + dy * p1.red), clampColor((1.0 - dy) * p0.green + dy * p1.green),
-                     clampColor((1.0 - dy) * p0.blue + dy * p1.blue)};
-    }
-
-    // Bottom border
-    if (y0 == getHeight(srcImage) - 1) {
-        const Pixel p0 = getPixelSafe(srcImage, x0, y0);
-        const Pixel p1 = getPixelSafe(srcImage, x0 + 1, y0);
-
-        return Pixel{clampColor((1.0 - dx) * p0.red + dx * p1.red), clampColor((1.0 - dx) * p0.green + dx * p1.green),
-                     clampColor((1.0 - dx) * p0.blue + dx * p1.blue)};
-    }
-
-    // Bilinear interpolation
-    const Pixel p00 = getPixelSafe(srcImage, x0, y0);
-    const Pixel p10 = getPixelSafe(srcImage, x0 + 1, y0);
-    const Pixel p01 = getPixelSafe(srcImage, x0, y0 + 1);
-    const Pixel p11 = getPixelSafe(srcImage, x0 + 1, y0 + 1);
-
-    const double w00 = (1.0 - dx) * (1.0 - dy);
-    const double w10 = dx * (1.0 - dy);
-    const double w01 = (1.0 - dx) * dy;
-    const double w11 = dx * dy;
-
-    return Pixel{clampColor(w00 * p00.red + w10 * p10.red + w01 * p01.red + w11 * p11.red),
-                 clampColor(w00 * p00.green + w10 * p10.green + w01 * p01.green + w11 * p11.green),
-                 clampColor(w00 * p00.blue + w10 * p10.blue + w01 * p01.blue + w11 * p11.blue)};
-    return {};
-}
+#include "core/color.hpp"
+#include "core/image.hpp"
+#include "io/bmp_io.hpp"
+#include "math/geometry.hpp"
+#include "math/interpolation.hpp"
 
 BMPImage applyTransformMatrix(const BMPImage &srcImage, const Matrix3x3 &T) {
     const TransformedImageBounds bounds = calculateNewDimensions(getImageBounds(srcImage), T);

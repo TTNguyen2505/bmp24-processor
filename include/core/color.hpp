@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "bmp24.hpp"
+#include "io/bmp24.hpp"
 
 struct ColorVector4 {
     double r{0.0}; /**< Red color component in range [0.0, 255.0] */
@@ -37,3 +37,12 @@ std::uint8_t doubleToByte(double value);
  */
 [[nodiscard]]
 Pixel color4ToPixel(const ColorVector4 &c);
+
+/**
+ * @brief Clamps a color value to the valid 8-bit range [0, 255].
+ *
+ * @param value Input color value.
+ * @return Clamped color value.
+ */
+[[nodiscard]]
+std::uint8_t clampColor(double value);

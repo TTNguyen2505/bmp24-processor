@@ -12,14 +12,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(PROJECT_SOURCES
     src/main.cpp
-    src/bmp24.cpp
-    src/cli_parser.cpp
-    src/color_filter.cpp
-    src/matrix.cpp
-    src/transform.cpp
-    src/util.cpp
-    src/coordinate.cpp
-    src/color.cpp
+    src/app/cli_parser.cpp
+    src/app/pipeline.cpp
+    src/core/color.cpp
+    src/core/color_filter.cpp
+    src/core/image.cpp
+    src/core/transform.cpp
+    src/io/bmp24.cpp
+    src/io/bmp_io.cpp
+    src/io/file_system.cpp
+    src/math/coordinate.cpp
+    src/math/geometry.cpp
+    src/math/interpolation.cpp
+    src/math/matrix.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

@@ -6,11 +6,7 @@
 #include <variant>
 #include <vector>
 
-#include "transform.hpp"
-
 #pragma pack(push, 1)
-
-struct TransformedImageBounds;
 
 /**
  * @brief BMP File Header structure (14 bytes)
@@ -97,6 +93,8 @@ struct BMPImage {
     std::vector<Pixel> data; /**< The pixel data */
 };
 
+#pragma pack(pop)
+
 /**
  * @brief Gets the width of a BMP image.
  *
@@ -153,38 +151,6 @@ void setHeight(BMPImage &image, std::int32_t height);
 void setImageSize(BMPImage &image, std::uint32_t size);
 
 /**
- * @brief Gets the bounding information of a BMP image.
- *
- * The returned bounds describe the image in its local coordinate system,
- * where the top-left pixel is located at (0, 0).
- *
- * @param image The BMP image.
- * @return The bounding information of the image.
- */
-[[nodiscard]]
-TransformedImageBounds getImageBounds(const BMPImage &image);
-
-/**
- * @brief Loads a BMP image from a specified file.
- *
- * @param[in] filename Path to the input BMP file.
- * @param[out] image Destination object to store the loaded BMP image data.
- * @return `true` if the image was successfully loaded, `false` otherwise.
- */
-[[nodiscard]]
-bool loadBMP(const std::string &filename, BMPImage &image);
-
-/**
- * @brief Saves a BMP image to a specified file.
- *
- * @param[in] filename Path to the output destination file.
- * @param[in] image BMPImage object containing the data to write.
- * @return `true` if the image was successfully saved, `false` otherwise.
- */
-[[nodiscard]]
-bool saveBMP(const std::string &filename, const BMPImage &image);
-
-/**
  * @brief Retrieves a read-only reference to the header info of a BMP image.
  *
  * @param[in] image The source BMPImage object.
@@ -201,5 +167,3 @@ const BMPInfoHeader &getInfoHeader(const BMPImage &image);
  */
 [[nodiscard]]
 BMPInfoHeader &getInfoHeader(BMPImage &image);
-
-#pragma pack(pop)
