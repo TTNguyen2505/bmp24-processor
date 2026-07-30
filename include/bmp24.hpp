@@ -169,15 +169,6 @@ const BMPInfoHeader &getInfoHeader(const BMPImage &image);
 BMPInfoHeader &getInfoHeader(BMPImage &image);
 
 /**
- * @brief Calculates the padding bytes required for each BMP row.
- *
- * @param width Image width in pixels.
- * @return Number of padding bytes (0-3).
- */
-[[nodiscard]]
-std::size_t calculatePadding(std::int32_t width);
-
-/**
  * @brief Loads a 24-bit BMP image from a file.
  *
  * @param filename Input BMP file path.
