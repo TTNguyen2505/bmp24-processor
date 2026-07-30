@@ -106,8 +106,48 @@ Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY) {
 }
 
 BMPImage applyTransformMatrix(const BMPImage &srcImage, const Matrix3x3 &T) {
-    // TODO: Create destination image, inverse-map pixels, interpolate colors, and preserve metadata.
-    return {};
+    const TransformedImageBounds bounds = calculateNewDimensions(getWidth(srcImage), getHeight(srcImage), T);
+
+    BMPImage dstImage = srcImage;
+
+    // Update dimensions
+    setWidth(dstImage, bounds.width);
+    setHeight(dstImage, bounds.height);
+
+    // Allocate destination pixels
+    dstImage.data.assign(static_cast<std::size_t>(bounds.width) * bounds.height, Pixel{0, 0, 0});
+
+    // Update image size
+    const std::size_t rowSize = static_cast<std::size_t>(bounds.width) * 3 + calculatePadding(bounds.width);
+
+    const std::uint32_t imageSize = static_cast<std::uint32_t>(rowSize * static_cast<std::size_t>(bounds.height));
+
+    setImageSize(dstImage, imageSize);
+
+    dstImage.fileHeader.size = dstImage.fileHeader.offset + imageSize;
+
+    // Inverse mapping
+    const Matrix3x3 inverseT = inverse(T);
+
+    for (std::int32_t y = 0; y < bounds.height; ++y) {
+        for (std::int32_t x = 0; x < bounds.width; ++x) {
+
+            CoordinateVector3 dstCoord{static_cast<double>(x + bounds.minX), static_cast<double>(y + bounds.minY), 1.0};
+
+            CoordinateVector3 srcCoord = inverseT * dstCoord;
+
+            // Normalize homogeneous coordinate (future-proof)
+            if (srcCoord.w != 0.0) {
+                srcCoord.x /= srcCoord.w;
+                srcCoord.y /= srcCoord.w;
+            }
+
+            dstImage.data[static_cast<std::size_t>(y) * bounds.width + x] =
+                    bilinearInterpolate(srcImage, srcCoord.x, srcCoord.y);
+        }
+    }
+
+    return dstImage;
 }
 
 Matrix3x3 createTranslationMatrix(double tx, double ty) {
