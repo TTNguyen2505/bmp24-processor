@@ -1,4 +1,4 @@
-#include "app/cli_parser.hpp"
+#include "../../include/app/cli_parser.hpp"
 
 #include <charconv>
 #include <iostream>

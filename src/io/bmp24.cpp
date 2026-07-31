@@ -1,11 +1,11 @@
-#include "io/bmp24.hpp"
+#include "../../include/io/bmp24.hpp"
 
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <type_traits>
 
-#include "math/geometry.hpp"
+#include "../../include/math/geometry.hpp"
 
 std::int32_t getWidth(const BMPImage &image) {
     return std::visit([](auto &&header) { return header.width; }, image.infoHeader);

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "io/bmp24.hpp"
-#include "math/matrix.hpp"
+#include "../io/bmp24.hpp"
+#include "../math/matrix.hpp"
 
 /**
  * @brief Applies a 4x4 color transformation matrix to a pixel.

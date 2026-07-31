@@ -1,4 +1,4 @@
-#include "io/bmp_io.hpp"
+#include "../../include/io/bmp_io.hpp"
 
 #include <cstddef>
 #include <cstdlib>
@@ -92,8 +92,6 @@ bool readPixelData(std::istream &is, const BMPFileHeader &fileHeader, const BMPI
         std::memcpy(pixels.data() + dstRow * width, row.data(), static_cast<std::size_t>(width) * sizeof(Pixel));
     }
 
-    std::cout << "R: " << (int) pixels[0].red << " G: " << (int) pixels[0].green << " B: " << (int) pixels[0].blue
-              << std::endl;
     return true;
 }
 
