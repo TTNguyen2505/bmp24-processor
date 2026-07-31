@@ -18,11 +18,36 @@ const std::unordered_map<std::string, TransformType> TRANSFORM_MAP{
         {"--shear", TransformType::Shear},
 };
 
+/**
+ * @brief Marks the command configuration as invalid.
+ *
+ * Sets the configuration's validity flag to false and stores the
+ * corresponding error message.
+ *
+ * @param config Command configuration to update.
+ * @param message Error message describing the failure.
+ */
 void fail(CommandConfig &config, const std::string &message) {
     config.isValid = false;
     config.errorMessage = message;
 }
 
+/**
+ * @brief Parses a numeric command-line argument.
+ *
+ * Reads the next command-line argument, validates that it is a valid
+ * numeric value, converts it to a double, and advances the argument index.
+ * If parsing fails, the command configuration is marked as invalid and an
+ * appropriate error message is stored.
+ *
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @param i Current argument index. Incremented if a value is successfully parsed.
+ * @param value Output variable receiving the parsed numeric value.
+ * @param config Command configuration used for error reporting.
+ * @param option Option currently being parsed (used in error messages).
+ * @return true if a valid numeric value was parsed; otherwise false.
+ */
 bool parseNumber(int argc, char *argv[], int &i, double &value, CommandConfig &config, const std::string &option) {
     if (i + 1 >= argc) {
         fail(config, "Option " + option + " requires a numeric argument.");
@@ -38,6 +63,19 @@ bool parseNumber(int argc, char *argv[], int &i, double &value, CommandConfig &c
     return true;
 }
 
+/**
+ * @brief Parses a color filter operation.
+ *
+ * Parses the numeric parameter associated with the specified filter option
+ * and appends the corresponding filter operation to the command configuration.
+ *
+ * @param config Command configuration to update.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @param i Current argument index. Updated as arguments are consumed.
+ * @param arg Filter option being parsed.
+ * @return true if the filter was successfully parsed; otherwise false.
+ */
 bool parseFilter(CommandConfig &config, int argc, char *argv[], int &i, const std::string &arg) {
     auto it = FILTER_MAP.find(arg);
 
@@ -54,6 +92,23 @@ bool parseFilter(CommandConfig &config, int argc, char *argv[], int &i, const st
     return true;
 }
 
+/**
+ * @brief Parses a geometric transformation.
+ *
+ * Parses the numeric parameter(s) associated with the specified
+ * transformation option and appends the corresponding transformation
+ * operation to the command configuration.
+ *
+ * Transformations accepting two parameters may also be specified with a
+ * single value, in which case the value is applied to both parameters.
+ *
+ * @param config Command configuration to update.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @param i Current argument index. Updated as arguments are consumed.
+ * @param arg Transformation option being parsed.
+ * @return true if the transformation was successfully parsed; otherwise false.
+ */
 bool parseTransform(CommandConfig &config, int argc, char *argv[], int &i, const std::string &arg) {
     auto it = TRANSFORM_MAP.find(arg);
 
@@ -87,6 +142,17 @@ bool parseTransform(CommandConfig &config, int argc, char *argv[], int &i, const
     return true;
 }
 
+/**
+ * @brief Parses a file path argument.
+ *
+ * Assigns the argument as the input or output file path, depending on
+ * which field has not yet been set. If both paths are already assigned,
+ * the command configuration is marked as invalid.
+ *
+ * @param config Command configuration to update.
+ * @param arg File path argument.
+ * @return true if the file path was successfully assigned; otherwise false.
+ */
 bool parseFileArgument(CommandConfig &config, const std::string &arg) {
     if (config.inputPath.empty()) {
         config.inputPath = arg;
