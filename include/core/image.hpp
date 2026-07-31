@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-#include "io/bmp24.hpp"
-#include "math/geometry.hpp"
+#include "../io/bmp24.hpp"
+#include "../math/geometry.hpp"
 
 /**
  * @brief Returns the pixel at the specified coordinates.

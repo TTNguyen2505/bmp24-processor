@@ -1,9 +1,9 @@
-#include "math/interpolation.hpp"
+#include "../../include/math/interpolation.hpp"
 
 #include <cmath>
 
-#include "core/color.hpp"
-#include "core/image.hpp"
+#include "../../include/core/color.hpp"
+#include "../../include/core/image.hpp"
 
 Pixel bilinearInterpolate(const BMPImage &srcImage, double srcX, double srcY) {
     const std::int32_t x0 = static_cast<std::int32_t>(std::floor(srcX));

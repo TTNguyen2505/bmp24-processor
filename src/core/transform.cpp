@@ -1,15 +1,15 @@
-#include "core/transform.hpp"
+#include "../../include/core/transform.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <utility>
 
-#include "core/color.hpp"
-#include "core/image.hpp"
-#include "io/bmp_io.hpp"
-#include "math/geometry.hpp"
-#include "math/interpolation.hpp"
+#include "../../include/core/color.hpp"
+#include "../../include/core/image.hpp"
+#include "../../include/io/bmp_io.hpp"
+#include "../../include/math/geometry.hpp"
+#include "../../include/math/interpolation.hpp"
 
 BMPImage applyTransformMatrix(const BMPImage &srcImage, const Matrix3x3 &T) {
     const TransformedImageBounds bounds = calculateNewDimensions(getImageBounds(srcImage), T);

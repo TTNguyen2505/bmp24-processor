@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "app/cli_parser.hpp"
-#include "io/bmp24.hpp"
-#include "math/matrix.hpp"
+#include "../io/bmp24.hpp"
+#include "../math/matrix.hpp"
+#include "cli_parser.hpp"
 
 /**
  * @brief Executes the complete image processing pipeline.

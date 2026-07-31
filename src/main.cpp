@@ -2,16 +2,16 @@
 #include <string>
 #include <vector>
 
-#include "app/cli_parser.hpp"
-#include "app/pipeline.hpp"
-#include "core/color_filter.hpp"
-#include "core/image.hpp"
-#include "core/transform.hpp"
-#include "io/bmp24.hpp"
-#include "io/bmp_io.hpp"
-#include "io/file_system.hpp"
-#include "math/geometry.hpp"
-#include "math/matrix.hpp"
+#include "../include/app/cli_parser.hpp"
+#include "../include/app/pipeline.hpp"
+#include "../include/core/color_filter.hpp"
+#include "../include/core/image.hpp"
+#include "../include/core/transform.hpp"
+#include "../include/io/bmp24.hpp"
+#include "../include/io/bmp_io.hpp"
+#include "../include/io/file_system.hpp"
+#include "../include/math/geometry.hpp"
+#include "../include/math/matrix.hpp"
 
 int main(int argc, char *argv[]) {
     struct CommandConfig config = parse(argc, argv);
