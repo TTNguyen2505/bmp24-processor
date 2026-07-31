@@ -3,6 +3,171 @@
 #include <charconv>
 #include <iostream>
 #include <string>
+#include <unordered_map>
+
+const std::unordered_map<std::string, FilterType> FILTER_MAP{
+        {"-grayscale", FilterType::Grayscale}, {"-sepia", FilterType::Sepia},
+        {"-invert", FilterType::Invert},       {"-brightness", FilterType::Brightness},
+        {"-contrast", FilterType::Contrast},   {"-saturate", FilterType::Saturate},
+};
+
+const std::unordered_map<std::string, TransformType> TRANSFORM_MAP{
+        {"--translate", TransformType::Translate},
+        {"--scale", TransformType::Scale},
+        {"--rotate", TransformType::Rotate},
+        {"--shear", TransformType::Shear},
+};
+
+/**
+ * @brief Marks the command configuration as invalid.
+ *
+ * Sets the configuration's validity flag to false and stores the
+ * corresponding error message.
+ *
+ * @param config Command configuration to update.
+ * @param message Error message describing the failure.
+ */
+void fail(CommandConfig &config, const std::string &message) {
+    config.isValid = false;
+    config.errorMessage = message;
+}
+
+/**
+ * @brief Parses a numeric command-line argument.
+ *
+ * Reads the next command-line argument, validates that it is a valid
+ * numeric value, converts it to a double, and advances the argument index.
+ * If parsing fails, the command configuration is marked as invalid and an
+ * appropriate error message is stored.
+ *
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @param i Current argument index. Incremented if a value is successfully parsed.
+ * @param value Output variable receiving the parsed numeric value.
+ * @param config Command configuration used for error reporting.
+ * @param option Option currently being parsed (used in error messages).
+ * @return true if a valid numeric value was parsed; otherwise false.
+ */
+bool parseNumber(int argc, char *argv[], int &i, double &value, CommandConfig &config, const std::string &option) {
+    if (i + 1 >= argc) {
+        fail(config, "Option " + option + " requires a numeric argument.");
+        return false;
+    }
+
+    if (!isNumber(argv[i + 1])) {
+        fail(config, "Option " + option + " requires a valid numeric value.");
+        return false;
+    }
+
+    value = std::stod(argv[++i]);
+    return true;
+}
+
+/**
+ * @brief Parses a color filter operation.
+ *
+ * Parses the numeric parameter associated with the specified filter option
+ * and appends the corresponding filter operation to the command configuration.
+ *
+ * @param config Command configuration to update.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @param i Current argument index. Updated as arguments are consumed.
+ * @param arg Filter option being parsed.
+ * @return true if the filter was successfully parsed; otherwise false.
+ */
+bool parseFilter(CommandConfig &config, int argc, char *argv[], int &i, const std::string &arg) {
+    auto it = FILTER_MAP.find(arg);
+
+    if (it == FILTER_MAP.end())
+        return false;
+
+    double amount;
+
+    if (!parseNumber(argc, argv, i, amount, config, arg))
+        return false;
+
+    config.filters.push_back({it->second, amount});
+
+    return true;
+}
+
+/**
+ * @brief Parses a geometric transformation.
+ *
+ * Parses the numeric parameter(s) associated with the specified
+ * transformation option and appends the corresponding transformation
+ * operation to the command configuration.
+ *
+ * Transformations accepting two parameters may also be specified with a
+ * single value, in which case the value is applied to both parameters.
+ *
+ * @param config Command configuration to update.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @param i Current argument index. Updated as arguments are consumed.
+ * @param arg Transformation option being parsed.
+ * @return true if the transformation was successfully parsed; otherwise false.
+ */
+bool parseTransform(CommandConfig &config, int argc, char *argv[], int &i, const std::string &arg) {
+    auto it = TRANSFORM_MAP.find(arg);
+
+    if (it == TRANSFORM_MAP.end())
+        return false;
+
+    if (it->second == TransformType::Rotate) {
+        double angle;
+
+        if (!parseNumber(argc, argv, i, angle, config, arg))
+            return false;
+
+        config.transforms.push_back({TransformType::Rotate, angle, 0.0});
+
+        return true;
+    }
+
+    double p1;
+
+    if (!parseNumber(argc, argv, i, p1, config, arg))
+        return false;
+
+    double p2 = p1;
+
+    if (i + 1 < argc && isNumber(argv[i + 1])) {
+        p2 = std::stod(argv[++i]);
+    }
+
+    config.transforms.push_back({it->second, p1, p2});
+
+    return true;
+}
+
+/**
+ * @brief Parses a file path argument.
+ *
+ * Assigns the argument as the input or output file path, depending on
+ * which field has not yet been set. If both paths are already assigned,
+ * the command configuration is marked as invalid.
+ *
+ * @param config Command configuration to update.
+ * @param arg File path argument.
+ * @return true if the file path was successfully assigned; otherwise false.
+ */
+bool parseFileArgument(CommandConfig &config, const std::string &arg) {
+    if (config.inputPath.empty()) {
+        config.inputPath = arg;
+        return true;
+    }
+
+    if (config.outputPath.empty()) {
+        config.outputPath = arg;
+        return true;
+    }
+
+    fail(config, "Unexpected argument: " + arg);
+
+    return false;
+}
 
 CommandConfig parse(int argc, char *argv[]) {
     CommandConfig config;
@@ -13,120 +178,42 @@ CommandConfig parse(int argc, char *argv[]) {
     }
 
     for (int i = 1; i < argc; ++i) {
-        const std::string arg(argv[i]);
+        std::string arg(argv[i]);
+
         if (arg == "-h" || arg == "--help") {
             config.showHelp = true;
             return config;
         }
     }
 
-    auto fail = [&](const std::string &message) {
-        config.isValid = false;
-        config.errorMessage = message;
-    };
-
     for (int i = 1; i < argc && config.isValid; ++i) {
-        const std::string arg(argv[i]);
+        std::string arg(argv[i]);
 
-        if (arg == "-o") {
-            if (i + 1 >= argc) {
-                fail("Option -o requires an output file path.");
+        if (FILTER_MAP.count(arg)) {
+            if (!parseFilter(config, argc, argv, i, arg))
                 break;
-            }
-            if (!config.outputPath.empty()) {
-                fail("The output file path was specified more than once.");
-                break;
-            }
-            config.outputPath = argv[++i];
+
             continue;
         }
 
-        if (arg == "-grayscale" || arg == "-sepia" || arg == "-invert" || arg == "-brightness" || arg == "-contrast" ||
-            arg == "-saturate") {
-            if (i + 1 >= argc) {
-                fail("Option " + arg + " requires 1 numeric argument.");
+        if (TRANSFORM_MAP.count(arg)) {
+            if (!parseTransform(config, argc, argv, i, arg))
                 break;
-            }
 
-            double amount = 0.0;
-            if (!isNumber(argv[++i])) {
-                fail("Option " + arg + " requires a valid numeric value.");
-                break;
-            }
-            amount = std::stod(argv[i]);
-
-            if (arg == "-grayscale") {
-                config.filters.push_back({FilterType::Grayscale, amount});
-            } else if (arg == "-sepia") {
-                config.filters.push_back({FilterType::Sepia, amount});
-            } else if (arg == "-invert") {
-                config.filters.push_back({FilterType::Invert, amount});
-            } else if (arg == "-brightness") {
-                config.filters.push_back({FilterType::Brightness, amount});
-            } else if (arg == "-contrast") {
-                config.filters.push_back({FilterType::Contrast, amount});
-            } else {
-                config.filters.push_back({FilterType::Saturate, amount});
-            }
             continue;
         }
 
-        if (arg == "--translate" || arg == "--scale" || arg == "--shear") {
-            if (i + 2 >= argc) {
-                fail("Option " + arg + " requires 2 numeric arguments.");
-                break;
-            }
-
-            if (!isNumber(argv[i + 1]) || !isNumber(argv[i + 2])) {
-                fail("Option " + arg + " requires valid numeric values.");
-                break;
-            }
-
-            const double p1 = std::stod(argv[++i]);
-            const double p2 = std::stod(argv[++i]);
-
-            if (arg == "--translate") {
-                config.transforms.push_back({TransformType::Translate, p1, p2});
-            } else if (arg == "--scale") {
-                config.transforms.push_back({TransformType::Scale, p1, p2});
-            } else {
-                config.transforms.push_back({TransformType::Shear, p1, p2});
-            }
-            continue;
-        }
-
-        if (arg == "--rotate") {
-            if (i + 1 >= argc) {
-                fail("Option --rotate requires 1 numeric argument.");
-                break;
-            }
-
-            if (!isNumber(argv[++i])) {
-                fail("Option --rotate requires a valid numeric value.");
-                break;
-            }
-
-            config.transforms.push_back({TransformType::Rotate, std::stod(argv[i]), 0.0});
-            continue;
-        }
-
-        if (!arg.empty() && arg[0] == '-') {
-            fail("Unknown option: " + arg);
+        if (!arg.empty() && arg.front() == '-') {
+            fail(config, "Unknown option: " + arg);
             break;
         }
 
-        if (config.inputPath.empty()) {
-            config.inputPath = arg;
-        } else if (config.outputPath.empty()) {
-            config.outputPath = arg;
-        } else {
-            fail("Unexpected argument: " + arg);
+        if (!parseFileArgument(config, arg))
             break;
-        }
     }
 
     if (config.isValid && config.inputPath.empty()) {
-        fail("No input BMP file was provided.");
+        fail(config, "No input BMP file was provided.");
     }
 
     return config;
@@ -136,7 +223,6 @@ void printHelp() {
     std::cout << "BMP24 Processor CLI\n"
               << "Usage:\n"
               << "  bmp24-processor.exe [options] <input.bmp>\n"
-              << "  bmp24-processor.exe [options] <input.bmp> -o <output.bmp>\n"
               << "\n"
               << "Description:\n"
               << "  Load a 24-bit BMP image, apply color filters and geometric transforms,\n"
@@ -144,9 +230,8 @@ void printHelp() {
               << "\n"
               << "Input and output:\n"
               << "  <input.bmp>         Path to the source BMP file.\n"
-              << "  -o <output.bmp>     Write the result to a custom output file.\n"
               << "                      If omitted, the program generates a name such as\n"
-              << "                      input_processed.bmp.\n"
+              << "                      input-<timestamp>.bmp.\n"
               << "\n"
               << "General options:\n"
               << "  -h, --help          Show this help message.\n"
@@ -168,7 +253,7 @@ void printHelp() {
               << "Examples:\n"
               << "  bmp24-processor.exe -grayscale 0.5 input.bmp\n"
               << "  bmp24-processor.exe -invert 0.5 --rotate 90 input.bmp\n"
-              << "  bmp24-processor.exe --translate 100 50 --scale 1.5 1.5 input.bmp -o output.bmp\n"
+              << "  bmp24-processor.exe --translate 100 50 --scale 1.5 1.5 input.bmp\n"
               << "\n"
               << "Notes:\n"
               << "  - Filters and transforms are applied in the order they appear on the command line.\n"

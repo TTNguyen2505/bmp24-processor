@@ -4,14 +4,6 @@
 
 #include "../include/app/cli_parser.hpp"
 #include "../include/app/pipeline.hpp"
-#include "../include/core/color_filter.hpp"
-#include "../include/core/image.hpp"
-#include "../include/core/transform.hpp"
-#include "../include/io/bmp24.hpp"
-#include "../include/io/bmp_io.hpp"
-#include "../include/io/file_system.hpp"
-#include "../include/math/geometry.hpp"
-#include "../include/math/matrix.hpp"
 
 int main(int argc, char *argv[]) {
     struct CommandConfig config = parse(argc, argv);
