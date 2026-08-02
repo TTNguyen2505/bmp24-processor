@@ -63,13 +63,13 @@ Matrix4x4 createInvertMatrix(double amount) {
     // Blends from identity (amount=0) to full inversion (amount=1)
     Matrix4x4 invert;
 
-    invert.data[0][0] = 1.0 - amount;
+    invert.data[0][0] = 1.0 - 2.0 * amount;
     invert.data[0][3] = 255.0 * amount;
 
-    invert.data[1][1] = 1.0 - amount;
+    invert.data[1][1] = 1.0 - 2.0 * amount;
     invert.data[1][3] = 255.0 * amount;
 
-    invert.data[2][2] = 1.0 - amount;
+    invert.data[2][2] = 1.0 - 2.0 * amount;
     invert.data[2][3] = 255.0 * amount;
 
     invert.data[3][3] = 1.0;
