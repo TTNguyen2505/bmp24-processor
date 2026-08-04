@@ -21,15 +21,6 @@ struct ColorVector4 {
 ColorVector4 pixelToColor4(const Pixel &p);
 
 /**
- * @brief Clamps a double-precision color value to [0.0, 255.0] and converts it to uint8_t.
- *
- * @param value The double color value to be clamped and rounded.
- * @return std::uint8_t The resulting 8-bit unsigned integer color byte.
- */
-[[nodiscard]]
-std::uint8_t doubleToByte(double value);
-
-/**
  * @brief Converts a ColorVector4 double vector back to a 24-bit BMP Pixel.
  *
  * @param c The input ColorVector4 vector containing calculated double color values.

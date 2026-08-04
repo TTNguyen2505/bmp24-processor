@@ -76,4 +76,15 @@ CoordinateVector3 operator*(const Matrix3x3 &mat, const CoordinateVector3 &vec) 
     return result;
 }
 
+ColorVector4 operator*(const Matrix4x4 &mat, const ColorVector4 &vec) {
+    ColorVector4 result;
+    result.r = mat.data[0][0] * vec.r + mat.data[0][1] * vec.g + mat.data[0][2] * vec.b + mat.data[0][3] * vec.w;
+    result.g = mat.data[1][0] * vec.r + mat.data[1][1] * vec.g + mat.data[1][2] * vec.b + mat.data[1][3] * vec.w;
+    result.b = mat.data[2][0] * vec.r + mat.data[2][1] * vec.g + mat.data[2][2] * vec.b + mat.data[2][3] * vec.w;
+    result.w = mat.data[3][0] * vec.r + mat.data[3][1] * vec.g + mat.data[3][2] * vec.b + mat.data[3][3] * vec.w;
+
+    return result;
+}
+
+
 Matrix3x3 createIdentityMatrix() { return Matrix3x3{{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}}; }
