@@ -10,12 +10,3 @@ struct CoordinateVector3 {
     double w{1.0}; /**< Homogeneous coordinate (always 1.0 for affine transformations). */
 };
 
-/**
- * @brief Creates a homogeneous coordinate vector from a 2D point.
- *
- * @param x X-coordinate.
- * @param y Y-coordinate.
- * @return CoordinateVector3 A homogeneous coordinate vector with w = 1.0.
- */
-[[nodiscard]]
-CoordinateVector3 pointToCoordinate3(double x, double y);
