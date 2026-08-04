@@ -81,13 +81,18 @@ CoordinateVector3 operator*(const Matrix3x3 &mat, const CoordinateVector3 &vec);
 ColorVector4 operator*(const Matrix4x4 &mat, const ColorVector4 &vec);
 
 /**
- * @brief Creates a 3×3 identity transformation matrix.
+ * @brief Creates an identity transformation matrix for a given Matrix type.
  *
- * The identity matrix represents a transformation that leaves all points
- * unchanged. It is commonly used as the starting point when composing
- * multiple affine transformations.
- *
- * @return A 3×3 identity matrix.
+ * @tparam T The matrix type (e.g., Matrix3x3, Matrix4x4).
+ * @return T An identity matrix of type T.
  */
-[[nodiscard]]
-Matrix3x3 createIdentityMatrix();
+template<typename T>
+[[nodiscard]] constexpr T createIdentityMatrix() {
+    T mat{};
+    constexpr std::size_t N = sizeof(mat.data) / sizeof(mat.data[0]);
+
+    for (std::size_t i = 0; i < N; ++i) {
+        mat.data[i][i] = 1.0;
+    }
+    return mat;
+}
