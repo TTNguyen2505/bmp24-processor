@@ -57,82 +57,26 @@ BMPImage applyTransformMatrix(const BMPImage &srcImage, const Matrix3x3 &T) {
 }
 
 Matrix3x3 createTranslationMatrix(double tx, double ty) {
-    Matrix3x3 mat{};
-
-    mat.data[0][0] = 1.0;
-    mat.data[0][1] = 0.0;
-    mat.data[0][2] = tx;
-
-    mat.data[1][0] = 0.0;
-    mat.data[1][1] = 1.0;
-    mat.data[1][2] = ty;
-
-    mat.data[2][0] = 0.0;
-    mat.data[2][1] = 0.0;
-    mat.data[2][2] = 1.0;
-
-    return mat;
+    return Matrix3x3{{{1.0, 0.0, tx}, {0.0, 1.0, ty}, {0.0, 0.0, 1.0}}};
 }
 
 Matrix3x3 createScaleMatrix(double sx, double sy) {
-    Matrix3x3 mat{};
-
-    mat.data[0][0] = sx;
-    mat.data[0][1] = 0.0;
-    mat.data[0][2] = 0.0;
-
-    mat.data[1][0] = 0.0;
-    mat.data[1][1] = sy;
-    mat.data[1][2] = 0.0;
-
-    mat.data[2][0] = 0.0;
-    mat.data[2][1] = 0.0;
-    mat.data[2][2] = 1.0;
-
-    return mat;
+    return Matrix3x3{{{sx, 0.0, 0.0}, {0.0, sy, 0.0}, {0.0, 0.0, 1.0}}};
 }
 
 Matrix3x3 createRotationMatrix(double theta) {
-    const double radians = degToRad(theta);
-    const double c = std::cos(radians);
-    const double s = std::sin(radians);
+    const double rad = degToRad(theta);
+    const double c = std::cos(rad);
+    const double s = std::sin(rad);
 
-    Matrix3x3 mat{};
-
-    mat.data[0][0] = c;
-    mat.data[0][1] = -s;
-    mat.data[0][2] = 0.0;
-
-    mat.data[1][0] = s;
-    mat.data[1][1] = c;
-    mat.data[1][2] = 0.0;
-
-    mat.data[2][0] = 0.0;
-    mat.data[2][1] = 0.0;
-    mat.data[2][2] = 1.0;
-
-    return mat;
+    return Matrix3x3{{{c, -s, 0.0}, {s, c, 0.0}, {0.0, 0.0, 1.0}}};
 }
 
 Matrix3x3 createShearMatrix(double alpha, double beta) {
-    const double alphaRad = degToRad(alpha);
-    const double betaRad = degToRad(beta);
+    const double tanAlpha = std::tan(degToRad(alpha));
+    const double tanBeta = std::tan(degToRad(beta));
 
-    Matrix3x3 mat{};
-
-    mat.data[0][0] = 1.0;
-    mat.data[0][1] = std::tan(alphaRad);
-    mat.data[0][2] = 0.0;
-
-    mat.data[1][0] = std::tan(betaRad);
-    mat.data[1][1] = 1.0;
-    mat.data[1][2] = 0.0;
-
-    mat.data[2][0] = 0.0;
-    mat.data[2][1] = 0.0;
-    mat.data[2][2] = 1.0;
-
-    return mat;
+    return Matrix3x3{{{1.0, tanAlpha, 0.0}, {tanBeta, 1.0, 0.0}, {0.0, 0.0, 1.0}}};
 }
 
 
