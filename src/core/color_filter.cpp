@@ -1,6 +1,7 @@
 #include "../../include/core/color_filter.hpp"
 
 #include "../../include/core/color.hpp"
+#include "../../include/math/matrix.hpp"
 
 Matrix4x4 createGrayscaleMatrix(double amount) {
     // Grayscale transformation using luminance weights: 0.299R + 0.587G + 0.114B
@@ -133,16 +134,7 @@ Matrix4x4 createSaturateMatrix(double amount) {
 }
 
 Pixel applyColorMatrix(const Matrix4x4 &matrix, const Pixel &pixel) {
-    const double r = matrix.data[0][0] * pixel.red + matrix.data[0][1] * pixel.green + matrix.data[0][2] * pixel.blue +
-                     matrix.data[0][3];
-    const double g = matrix.data[1][0] * pixel.red + matrix.data[1][1] * pixel.green + matrix.data[1][2] * pixel.blue +
-                     matrix.data[1][3];
-    const double b = matrix.data[2][0] * pixel.red + matrix.data[2][1] * pixel.green + matrix.data[2][2] * pixel.blue +
-                     matrix.data[2][3];
-
-    Pixel result;
-    result.red = clampColor(r);
-    result.green = clampColor(g);
-    result.blue = clampColor(b);
-    return result;
+    ColorVector4 vector = pixelToColor4(pixel);
+    vector = matrix * vector;
+    return color4ToPixel(vector);
 }
