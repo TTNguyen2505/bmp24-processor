@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../core/color.hpp"
 #include "../math/coordinate.hpp"
 
 /**
@@ -64,6 +65,20 @@ Matrix4x4 operator*(const Matrix4x4 &lhs, const Matrix4x4 &rhs);
  */
 [[nodiscard]]
 CoordinateVector3 operator*(const Matrix3x3 &mat, const CoordinateVector3 &vec);
+
+/**
+ * @brief Multiplies a 4x4 color transformation matrix by a 4D homogeneous color vector.
+ *
+ * Applies a color transformation (such as grayscale, sepia, brightness,
+ * contrast, saturation, or color mixing) to a color vector
+ * [r, g, b, w]^T.
+ *
+ * @param mat The 4x4 color transformation matrix.
+ * @param vec The 4D homogeneous color vector.
+ * @return ColorVector4 The transformed color vector.
+ */
+[[nodiscard]]
+ColorVector4 operator*(const Matrix4x4 &mat, const ColorVector4 &vec);
 
 /**
  * @brief Creates a 3×3 identity transformation matrix.
