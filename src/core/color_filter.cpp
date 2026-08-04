@@ -6,9 +6,9 @@
 #include <algorithm>
 
 Matrix4x4 createGrayscaleMatrix(double amount) {
-    const double r = 0.299 * amount;
-    const double g = 0.587 * amount;
-    const double b = 0.114 * amount;
+    const double r = 0.2126 * amount;
+    const double g = 0.7152 * amount;
+    const double b = 0.0722 * amount;
     const double inv = 1.0 - amount;
 
     return Matrix4x4{{{inv + r, g, b, 0.0}, {r, inv + g, b, 0.0}, {r, g, inv + b, 0.0}, {0.0, 0.0, 0.0, 1.0}}};
@@ -43,9 +43,9 @@ Matrix4x4 createContrastMatrix(double amount) {
 
 Matrix4x4 createSaturateMatrix(double amount) {
     const double inv = 1.0 - amount;
-    const double lr = 0.299 * inv;
-    const double lg = 0.587 * inv;
-    const double lb = 0.114 * inv;
+    const double lr = 0.2126 * inv;
+    const double lg = 0.7152 * inv;
+    const double lb = 0.0722 * inv;
 
     return Matrix4x4{
             {{lr + amount, lg, lb, 0.0}, {lr, lg + amount, lb, 0.0}, {lr, lg, lb + amount, 0.0}, {0.0, 0.0, 0.0, 1.0}}};
