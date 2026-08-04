@@ -21,7 +21,6 @@ set(PROJECT_SOURCES
     src/io/bmp24.cpp
     src/io/bmp_io.cpp
     src/io/file_system.cpp
-    src/math/coordinate.cpp
     src/math/geometry.cpp
     src/math/interpolation.cpp
     src/math/matrix.cpp
