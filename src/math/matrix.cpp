@@ -85,6 +85,3 @@ ColorVector4 operator*(const Matrix4x4 &mat, const ColorVector4 &vec) {
 
     return result;
 }
-
-
-Matrix3x3 createIdentityMatrix() { return Matrix3x3{{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}}; }

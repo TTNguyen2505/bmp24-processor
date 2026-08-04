@@ -71,7 +71,7 @@ bool runPipeline(const CommandConfig &config) {
 Matrix3x3 buildTransformMatrix(const BMPImage &image, const std::vector<TransformOperation> &operations) {
     TransformedImageBounds currentBounds = getImageBounds(image);
 
-    Matrix3x3 T = createIdentityMatrix();
+    auto T = createIdentityMatrix<Matrix3x3>();
 
     for (const auto &op: operations) {
         Matrix3x3 currentT;
@@ -103,7 +103,7 @@ Matrix3x3 buildTransformMatrix(const BMPImage &image, const std::vector<Transfor
 }
 
 Matrix4x4 buildColorMatrix(const std::vector<FilterOperation> &operations) {
-    Matrix4x4 F = {{{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}}};
+    Matrix4x4 F = createIdentityMatrix<Matrix4x4>();
 
     for (const auto &op: operations) {
         Matrix4x4 currentF;
